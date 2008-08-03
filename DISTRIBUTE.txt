@@ -1,0 +1,79 @@
+From: John Bradley <bradley@trilon.com>
+To: "L. Gabriel Somlo" <somlo@cmu.edu>
+Subject: RE: May I submit xv + jumbo patches to Livna ?
+Date: Tue, 11 Dec 2007 15:49:55 -0500
+
+Glad to hear that xv is still of use to someone. :)
+
+One of the nice features of "never updated" software is that
+(eventually) all the more obvious bugs get patched -- and the program,
+while primitive by today's standards, probably *screams*. (It ran pretty
+well on computers that were 10-100 times slower than today's hardware.)
+
+New features? Pah! Who needs 'em?!?  :D
+
+
+Yes, please, go ahead, patch it as needed and distribute it anywhere you
+think is appropriate. (I no longer follow the Unix/Linux 'scene', so I
+defer to your judgement on that.)
+
+--jhb
+
+------------------------------------------------------------------
+Enjoy the moderately-entertaining and never-updated World of XV:
+   http://www.trilon.com/xv
+------------------------------------------------------------------
+
+
+
+> -----Original Message-----
+> From: L. Gabriel Somlo [mailto:somlo@cmu.edu]
+> Sent: Sunday, December 09, 2007 10:10 PM
+> To: bradley@cis.upenn.edu
+> Cc: xv@trilon.com; kirchh@trilon.com; newt@pobox.com
+> Subject: May I submit xv + jumbo patches to Livna ?
+>
+>
+> Mr. Bradley,
+>
+> I am a huge fan of your xv program, and have been using
+> it on my home Linux box to view images such as family
+> photos for over 10 years.
+>
+> I adamantly refuse to use other alternatives included by
+> default with with my linux distribution (Fedora), mainly
+> because of the nice and intuitive interface that xv offers.
+>
+> I am writing to you because I would like to submit xv to
+> the Livna repository (soon to merge with RPMfusion).
+> Livna (rpm.livna.org) is a repository of packages built for
+> Fedora, but which could not be directly included into Fedora
+> for various reasons (such as a non-opensource license).
+>
+> I believe adding xv to Livna would be mostly consistent with
+> the spirit of your license: non-commercial distribution, not
+> bundled with any other product (Livna is a repository of
+> various software packages for Fedora, and does not sell or
+> otherwise distribute CDs containing multiple packages).
+>
+> The only potential issue is that I would like to apply
+> Greg Roelofs' jumbo patches available from
+>
+> 	http://sonic.net/~roelofs/greg_xv.html
+>
+> making the resulting build a "modified" version according
+> to a strict interpretation of the license.
+>
+> I would like to have your blessing to proceed with this
+> endeavor. I believe the end result to be in everyone's
+> mutual interest, as a wider-scale distribution of xv will
+> generate a wider pool of users who might potentially
+> purchase a commercial license.
+>
+> Sincerely,
+>
+> Gabriel Somlo
+>
+> PS. The not-yet-submitted source RPM file can be found at
+> http://www.contrib.andrew.cmu.edu/~somlo/
+> for your perusal.

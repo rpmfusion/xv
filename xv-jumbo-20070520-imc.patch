@@ -1,0 +1,35 @@
+diff -NarU5 xv-3.10a.orig/xvdir.c xv-3.10a/xvdir.c
+--- xv-3.10a.orig/xvdir.c	2007-12-09 13:31:39.000000000 -0500
++++ xv-3.10a/xvdir.c	2008-01-18 14:50:30.000000000 -0500
+@@ -538,11 +538,12 @@
+     if (i >= 0) changedDirMB(i);
+     return -1;
+   }
+ 
+   /* handle clicks inside the filename box */
+-  if (x > 80 &&
++  if (enPos > stPos &&
++      x > 80 &&
+       y > dList.y + (int) dList.h + 30 &&
+       x < 80 + DNAMWIDE+6 &&
+       y < dList.y + (int) dList.h + 30 + LINEHIGH+5) {
+     int tx;
+     int dx;
+diff -NarU5 xv-3.10a.orig/xvmisc.c xv-3.10a/xvmisc.c
+--- xv-3.10a.orig/xvmisc.c	2007-12-09 13:31:39.000000000 -0500
++++ xv-3.10a/xvmisc.c	2008-01-18 14:37:25.000000000 -0500
+@@ -559,14 +559,10 @@
+ 
+ #ifdef HAVE_MGCSFX
+     if (mgcsfxW) XDestroyWindow(theDisp, mgcsfxW);
+ #endif
+ 
+-#ifdef HAVE_PNG
+-    if (pngW)  XDestroyWindow(theDisp, pngW);
+-#endif
+-
+     /* if NOT using stdcmap for images, free stdcmap */
+     if (colorMapMode != CM_STDCMAP) {
+       int j;
+       for (j=0; j<stdnfcols; j++)
+ 	xvFreeColors(theDisp, theCmap, &stdfreecols[j], 1, 0L);
