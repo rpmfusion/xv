@@ -1,0 +1,11 @@
+
+[Desktop Entry]
+Encoding=UTF-8
+Name=xv
+GenericName=XV Image Viewer
+Comment=XV Image Viewer
+Exec=xv
+Icon=xv
+Terminal=false
+Type=Application
+Categories=Graphics;Utility;2DGraphics;Viewer;
