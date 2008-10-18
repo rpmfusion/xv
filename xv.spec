@@ -3,7 +3,7 @@
 
 Name: xv
 Version: %{vprog}.jumbopatch.%{vjumbo}
-Release: 6%{?dist}
+Release: 7%{?dist}
 Summary: Interactive image display program for X
 License: Shareware
 Group: Applications/Multimedia
@@ -69,6 +69,9 @@ desktop-file-install --vendor=livna --dir=%{buildroot}/%{_datadir}/applications 
 %doc BUGS CHANGELOG docs IDEAS README.pcd
 
 %changelog
+* Sat Oct 18 2008 Thorsten Leemhuis <fedora [AT] leemhuis [DOT] info - 3.10a.jumbopatch.20070520-7
+- rebuild
+
 * Sun Aug 03 2008 Thorsten Leemhuis <fedora [AT] leemhuis [DOT] info - 3.10a.jumbopatch.20070520-6
 - rebuild
 
