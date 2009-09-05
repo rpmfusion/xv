@@ -1,0 +1,86 @@
+This patch addresses a number of compiler warnings about dubious type
+conversions.
+
+Most importantly, it fixes some buffer overflow checks using
+invalid constructs like this:
+
+  int filesize = get_file_size();
+  if (filesize + 256 < filesize) ...
+
+Integer overflow operation is undefined for signed values, so this
+check can legitimately be optimized out, hence losing the buffer
+overflow check.
+
+--- xv-3.10a/xvbutt.c.clean	2009-08-21 10:01:04.000000000 +0100
++++ xv-3.10a/xvbutt.c	2009-08-21 13:06:48.000000000 +0100
+@@ -843,7 +843,7 @@
+      int           x,y;
+      unsigned int  w,h;
+      const char   *title;
+-     const char  * const *list;
++     const char  **list;
+      int           nlist;
+      unsigned long fg,bg,hi,lo;
+ {
+--- xv-3.10a/xvgif.c.clean	2009-08-21 10:26:28.000000000 +0100
++++ xv-3.10a/xvgif.c	2009-08-21 10:46:25.000000000 +0100
+@@ -100,7 +100,7 @@
+ static int   gifError    PARM((PICINFO *, const char *));
+ static void  gifWarning  PARM((const char *));
+ 
+-static int         filesize;
++static long int    filesize;
+ static const char *bname;
+ static byte       *dataptr;
+ 
+@@ -140,7 +140,7 @@
+   filesize = ftell(fp);
+   fseek(fp, 0L, 0);
+ 
+-  if (filesize + 256 < filesize)
++  if (filesize > (2147483647L - 256))
+     return( gifError(pinfo, "GIF file size is too large") );
+ 
+   /* the +256's are so we can read truncated GIF files without fear of
+@@ -769,7 +769,7 @@
+   pinfo->normw = pinfo->w;   pinfo->normh = pinfo->h;
+ 
+   sprintf(pinfo->fullInfo,
+-	  "GIF%s, %d bit%s per pixel, %sinterlaced.  (%d bytes)",
++	  "GIF%s, %d bit%s per pixel, %sinterlaced.  (%ld bytes)",
+  	  (gif89) ? "89" : "87", BitsPerPixel,
+ 	  (BitsPerPixel==1) ? "" : "s",
+  	  Interlace ? "" : "non-", filesize);
+--- xv-3.10a/xv.h.clean	2009-08-21 10:01:05.000000000 +0100
++++ xv-3.10a/xv.h	2009-08-21 13:17:17.000000000 +0100
+@@ -1587,7 +1595,7 @@
+ 
+ 
+ void   MBCreate            PARM((MBUTT *, Window, int, int, u_int, u_int,
+-				 const char *, const char * const *, int,
++				 const char *, const char **, int,
+ 				 u_long, u_long, u_long, u_long));
+ 
+ void   MBRedraw            PARM((MBUTT *));
+--- xv-3.10a/xvsunras.c.clean	2009-08-21 10:01:04.000000000 +0100
++++ xv-3.10a/xvsunras.c	2009-08-21 13:01:07.000000000 +0100
+@@ -54,7 +54,7 @@
+      PICINFO *pinfo;
+ {
+   FILE	*fp;
+-  int	 linesize,lsize,csize,isize,i,w,h,d,npixels,nbytes;
++  unsigned int	 linesize,lsize,csize,isize,i,w,h,d,npixels,nbytes;
+   byte	 *image, *line;
+   struct rasterfile sunheader;
+   const char *bname;
+--- xv-3.10a/xvwbmp.c.clean	2009-08-21 12:57:13.000000000 +0100
++++ xv-3.10a/xvwbmp.c	2009-08-21 12:58:38.000000000 +0100
+@@ -75,7 +75,7 @@
+     int im_type;	/* image type (only type 0 supported) */
+     uint8 fix_header;	/* fixed header field */
+     int width, height;
+-    int npixels, raw_size, aux;
++    unsigned int npixels, raw_size, aux;
+     uint8 * raw;
+ 
+     st_fname = fname;
