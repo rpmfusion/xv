@@ -3,7 +3,7 @@
 
 Name: xv
 Version: %{vprog}.jumbopatch.%{vjumbo}
-Release: 9%{?dist}
+Release: 10%{?dist}
 Summary: Interactive image display program for X
 Summary(de.UTF-8): X-basierender Bild-Viewer für praktische sämtliche Grafiken
 Summary(es.UTF-8): Visualizador de imágenes para X para cuasi todos los formatos de imágenes
@@ -269,6 +269,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %doc %{_docdir}/%{name}-%{vprog}/manuals/
 
 %changelog
+* Tue Sep 15 2009 Gabriel Somlo <somlo at cmu.edu> 3.10a.jumbopatch.20070520-10
+- update desktop file MimeType list (thanks to goeran@uddeborg.se)
+
 * Thu Sep 03 2009 Paul Howarth <paul@city-fan.org> 3.10a.jumbopatch.20070520-9
 - clean up prep, build, install, and changelog sections prior to surgery
 - include Greg Roelofs' jumbo patch update (20081216)
