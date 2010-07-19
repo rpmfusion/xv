@@ -3,7 +3,7 @@
 
 Name: xv
 Version: %{vprog}.jumbopatch.%{vjumbo}
-Release: 10%{?dist}
+Release: 11%{?dist}
 Summary: Interactive image display program for X
 Summary(de.UTF-8): X-basierender Bild-Viewer für praktische sämtliche Grafiken
 Summary(es.UTF-8): Visualizador de imágenes para X para cuasi todos los formatos de imágenes
@@ -34,12 +34,12 @@ BuildRequires: libX11-devel libXt-devel
 %global xlibdir %{_libdir}
 %else
 BuildRequires: xorg-x11-devel
+Requires: man
 Requires(post): desktop-file-utils
 Requires(postun): desktop-file-utils
 %global xlibdir /usr/X11R6/%{_lib}
 %endif
 Requires: hicolor-icon-theme
-Requires: man
 
 %description
 This is the famous 'xv' by John Bradley. It is shareware, but we ship
@@ -118,7 +118,7 @@ of the various image file formats supported.
 %prep
 %setup -q -n %{name}-%{vprog} -b 1 -a 5 -a 6
 
-# Apply 20070520 jumbo enhancement patch, bundled with %{SOURCE1}
+# Apply 20070520 jumbo enhancement patch, bundled with %%{SOURCE1}
 %{__patch} -p1 < ../%{name}-%{vprog}-jumbo-fix-enh-patch-%{vjumbo}.txt
 %{__rm} ../%{name}-%{vprog}-jumbo-fix-enh-patch-%{vjumbo}.txt
 
@@ -150,7 +150,7 @@ done
 
 # Reorganize docs
 #
-# Note: Man pages for p?m file formats would conflict with netpbm-progs if installed under %{_mandir}
+# Note: Man pages for p?m file formats would conflict with netpbm-progs if installed under %%{_mandir}
 %{__mv} 00_README README.FLmask
 %{__mv} docs/README README.docs
 %{__mkdir} docs/{formats,manuals}/
@@ -228,7 +228,7 @@ fi
 update-desktop-database &> /dev/null || :
 
 %if "%{?rhel}" != "4"
-# EL-4 doesn't have %posttrans, nor does it have an icon cache to maintain
+# EL-4 doesn't have %%posttrans, nor does it have an icon cache to maintain
 %posttrans
 gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %endif
@@ -269,6 +269,11 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %doc %{_docdir}/%{name}-%{vprog}/manuals/
 
 %changelog
+* Mon Jul 19 2010 Paul Howarth <paul@city-fan.org> 3.10a.jumbopatch.20070520-11
+- drop dependency on man, except for EL-4 build where it's required for
+  ownership of %%{_mandir}/{fi,pl} (later releases include these directories
+  in the filesystem package)
+
 * Tue Sep 15 2009 Gabriel Somlo <somlo at cmu.edu> 3.10a.jumbopatch.20070520-10
 - update desktop file MimeType list (thanks to goeran@uddeborg.se)
 
