@@ -3,7 +3,7 @@
 
 Name: xv
 Version: %{vprog}.jumbopatch.%{vjumbo}
-Release: 12%{?dist}
+Release: 13%{?dist}
 Summary: Interactive image display program for X
 Summary(de.UTF-8): X-basierender Bild-Viewer für praktische sämtliche Grafiken
 Summary(es.UTF-8): Visualizador de imágenes para X para cuasi todos los formatos de imágenes
@@ -28,6 +28,7 @@ Patch1: http://www.gregroelofs.com/code/xv-3.10a-enhancements.20070520-20081216.
 Patch2: xv-3.10a-cleanup.patch
 Patch3: xv-FLmask.v2.1.patch
 Patch4: xv-wait.patch
+Patch5: xv-3.10a-libpng15.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: libtiff-devel libpng-devel jasper-devel desktop-file-utils
 %if "%{?rhel}" != "4"
@@ -137,6 +138,9 @@ of the various image file formats supported.
 
 # replace CLK_TCK with sysconf(_SC_CLK_TCK)
 %patch4 -p1
+
+# libpng 1.5 compatibility
+%patch5 -p0
 
 # Include permission to distribute
 %{__install} -m 0644 -p %{SOURCE2} .
@@ -273,6 +277,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %doc %{_docdir}/%{name}-%{vprog}/manuals/
 
 %changelog
+* Fri Dec  9 2011 Paul Howarth <paul@city-fan.org> 3.10a.jumbopatch.20070520-13
+- add patch from Gentoo for libpng 1.5 compatibility
+
 * Wed Sep 07 2011 Gabriel Somlo <somlo at cmu.edu> 3.10a.jumbopatch.20070520-12
 - fix wait timer (BZ 1929, thanks to Sjoerd Mullender <sjoerd@acm.org>)
 
