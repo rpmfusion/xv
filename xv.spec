@@ -3,7 +3,7 @@
 
 Name: xv
 Version: %{vprog}.jumbopatch.%{vjumbo}
-Release: 14%{?dist}
+Release: 15%{?dist}
 Summary: Interactive image display program for X
 Summary(de.UTF-8): X-basierender Bild-Viewer für praktische sämtliche Grafiken
 Summary(es.UTF-8): Visualizador de imágenes para X para cuasi todos los formatos de imágenes
@@ -277,8 +277,11 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %doc %{_docdir}/%{name}-%{vprog}/manuals/
 
 %changelog
-* Thu Feb 09 2012 Nicolas Chauvet <kwizart@gmail.com> - 3.10a.jumbopatch.20070520-14
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_17_Mass_Rebuild
+* Mon Aug  6 2012 Paul Howarth <paul@city-fan.org> 3.10a.jumbopatch.20070520-15
+- rebuild for libtiff.so.5 (libtiff 4.0) in Rawhide
+
+* Thu Feb  9 2012 Nicolas Chauvet <kwizart@gmail.com> 3.10a.jumbopatch.20070520-14
+- rebuilt for https://fedoraproject.org/wiki/Fedora_17_Mass_Rebuild
 
 * Fri Dec  9 2011 Paul Howarth <paul@city-fan.org> 3.10a.jumbopatch.20070520-13
 - add patch from Gentoo for libpng 1.5 compatibility
