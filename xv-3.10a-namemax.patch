@@ -1,0 +1,16 @@
+diff -NarU5 xv-3.10a/xvtext.c xv-3.10a.namemax/xvtext.c
+--- xv-3.10a/xvtext.c	2013-03-04 16:34:40.000000000 -0500
++++ xv-3.10a.namemax/xvtext.c	2013-03-04 16:50:39.217371154 -0500
+@@ -51,11 +51,11 @@
+ #  define TV_MSCODE   7
+ 
+ #  define TV_J_NBUTTS 8
+ #endif
+ 
+-#define TITLELEN 128
++#define TITLELEN NAME_MAX
+ 
+ #ifdef TV_MULTILINGUAL
+ struct coding_spec {
+     struct coding_system coding_system;
+     char *(*converter)PARM((char *, int, int *));
