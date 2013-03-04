@@ -3,7 +3,7 @@
 
 Name: xv
 Version: %{vprog}.jumbopatch.%{vjumbo}
-Release: 15%{?dist}
+Release: 16%{?dist}
 Summary: Interactive image display program for X
 Summary(de.UTF-8): X-basierender Bild-Viewer für praktische sämtliche Grafiken
 Summary(es.UTF-8): Visualizador de imágenes para X para cuasi todos los formatos de imágenes
@@ -29,6 +29,7 @@ Patch2: xv-3.10a-cleanup.patch
 Patch3: xv-FLmask.v2.1.patch
 Patch4: xv-wait.patch
 Patch5: xv-3.10a-libpng15.patch
+Patch6: xv-3.10a-namemax.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: libtiff-devel libpng-devel jasper-devel desktop-file-utils
 %if "%{?rhel}" != "4"
@@ -141,6 +142,9 @@ of the various image file formats supported.
 
 # libpng 1.5 compatibility
 %patch5 -p0
+
+# NAME_MAX buffer overflow fix
+%patch6 -p1
 
 # Include permission to distribute
 %{__install} -m 0644 -p %{SOURCE2} .
@@ -277,6 +281,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %doc %{_docdir}/%{name}-%{vprog}/manuals/
 
 %changelog
+* Mon Mar  4 2013 Gabriel Somlo <somlo at cmu.edu> 3.10a.jumbopatch.20070520-16
+- fix buffer overflow caused by filenames longer than the window title limit
+
 * Mon Aug  6 2012 Paul Howarth <paul@city-fan.org> 3.10a.jumbopatch.20070520-15
 - rebuild for libtiff.so.5 (libtiff 4.0) in Rawhide
 
