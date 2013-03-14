@@ -3,7 +3,7 @@
 
 Name: xv
 Version: %{vprog}.jumbopatch.%{vjumbo}
-Release: 16%{?dist}.1
+Release: 17%{?dist}
 Summary: Interactive image display program for X
 Summary(de.UTF-8): X-basierender Bild-Viewer für praktische sämtliche Grafiken
 Summary(es.UTF-8): Visualizador de imágenes para X para cuasi todos los formatos de imágenes
@@ -281,6 +281,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %doc %{_docdir}/%{name}-%{vprog}/manuals/
 
 %changelog
+* Thu Mar 14 2013 Gabriel Somlo <somlo at cmu.edu> 3.10a.jumbopatch.20070520-17
+- additional fix for long filename buffer overflow
+
 * Mon Mar  4 2013 Gabriel Somlo <somlo at cmu.edu> 3.10a.jumbopatch.20070520-16
 - fix buffer overflow caused by filenames longer than the window title limit
 
