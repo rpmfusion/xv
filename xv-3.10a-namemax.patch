@@ -1,6 +1,35 @@
-diff -NarU5 xv-3.10a/xvtext.c xv-3.10a.namemax/xvtext.c
---- xv-3.10a/xvtext.c	2013-03-04 16:34:40.000000000 -0500
-+++ xv-3.10a.namemax/xvtext.c	2013-03-04 16:50:39.217371154 -0500
+diff -NarU5 xv-3.10a.orig/xv.c xv-3.10a/xv.c
+--- xv-3.10a.orig/xv.c	2013-03-14 09:37:32.095682131 -0400
++++ xv-3.10a/xv.c	2013-03-14 09:55:10.629312017 -0400
+@@ -62,11 +62,11 @@
+ static double vexpand = 1.0;    /* '-expand' argument */
+ static const char *maingeom = NULL;
+ static const char *icongeom = NULL;
+ static Atom   __SWM_VROOT = None;
+ 
+-static char   basefname[128];   /* just the current fname, no path */
++static char   basefname[NAME_MAX+1];   /* just the current fname, no path */
+ 
+ #ifdef TV_L10N
+ #  ifndef TV_FONTSET
+ #    define TV_FONTSET "-*-fixed-medium-r-normal--%d-*"
+ #  endif
+@@ -3998,11 +3998,11 @@
+ 
+ /***********************************/
+ static void setWinIconNames(name)
+      const char *name;
+ {
+-  char winname[256], iconname[256];
++  char winname[NAME_MAX+sizeof("xv : ")+sizeof(VERSTR)+sizeof(" <unregistered>")+1], iconname[NAME_MAX+1];
+ 
+   if (winTitle) {
+     strcpy(winname, winTitle);
+     strcpy(iconname, winTitle);
+   }
+diff -NarU5 xv-3.10a.orig/xvtext.c xv-3.10a/xvtext.c
+--- xv-3.10a.orig/xvtext.c	2013-03-14 09:37:32.129684079 -0400
++++ xv-3.10a/xvtext.c	2013-03-14 09:38:44.288818545 -0400
 @@ -51,11 +51,11 @@
  #  define TV_MSCODE   7
  
@@ -8,7 +37,7 @@ diff -NarU5 xv-3.10a/xvtext.c xv-3.10a.namemax/xvtext.c
  #endif
  
 -#define TITLELEN 128
-+#define TITLELEN NAME_MAX
++#define TITLELEN (NAME_MAX+sizeof("File: ''")+1)
  
  #ifdef TV_MULTILINGUAL
  struct coding_spec {
