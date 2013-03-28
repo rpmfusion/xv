@@ -1,6 +1,12 @@
-diff -NarU5 xv-3.10a.orig/xv.c xv-3.10a/xv.c
---- xv-3.10a.orig/xv.c	2013-03-14 09:37:32.095682131 -0400
-+++ xv-3.10a/xv.c	2013-03-14 09:55:10.629312017 -0400
+Under several circumstances, overly large filenames (or overly long command
+line arguments) cause buffer overflows due to the lack of bounds checking in
+the original xv source code. This patch is a first pass attempt at fixing that.
+
+Signed-off-by: Gabriel Somlo <somlo@cmu.edu>
+
+diff -NarU5 a/xv.c b/xv.c
+--- a/xv.c	2013-03-28 12:59:56.364082302 -0400
++++ b/xv.c	2013-03-28 13:22:10.312576922 -0400
 @@ -62,11 +62,11 @@
  static double vexpand = 1.0;    /* '-expand' argument */
  static const char *maingeom = NULL;
@@ -14,7 +20,38 @@ diff -NarU5 xv-3.10a.orig/xv.c xv-3.10a/xv.c
  #  ifndef TV_FONTSET
  #    define TV_FONTSET "-*-fixed-medium-r-normal--%d-*"
  #  endif
-@@ -3998,11 +3998,11 @@
+@@ -2167,15 +2167,17 @@
+   else if (filenum == PADDED) {
+     /* need fullfname (used for window/icon name),
+        basefname(compute from fullfname) */
+ 
+     i = LoadPad(&pinfo, fullfname);
++    if (!i) goto FAILED;   /* shouldn't happen */
++
+     fullname = fullfname;
+     strcpy(filename, fullfname);
++    if (strlen(BaseName(fullfname)) > NAME_MAX) goto FAILED;
+     strcpy(basefname, BaseName(fullfname));
+ 
+-    if (!i) goto FAILED;   /* shouldn't happen */
+ 
+     if (killpage) {      /* kill old page files, if any */
+       KillPageFiles(pageBaseName, numPages);
+       pageBaseName[0] = '\0';
+       numPages = 1;
+@@ -2236,10 +2238,11 @@
+ #else
+   else fullname = namelist[filenum];
+ #endif
+ 
+   strcpy(fullfname, fullname);
++  if (strlen(BaseName(fullfname)) > NAME_MAX) goto FAILED;
+   strcpy(basefname, BaseName(fullname));
+ 
+ 
+   /* chop off trailing ".Z", ".z", or ".gz" from displayed basefname, if any */
+   if (strlen(basefname)>2 && strcmp(basefname+strlen(basefname)-2,".Z")==0)
+@@ -3998,11 +4001,11 @@
  
  /***********************************/
  static void setWinIconNames(name)
@@ -27,9 +64,9 @@ diff -NarU5 xv-3.10a.orig/xv.c xv-3.10a/xv.c
      strcpy(winname, winTitle);
      strcpy(iconname, winTitle);
    }
-diff -NarU5 xv-3.10a.orig/xvtext.c xv-3.10a/xvtext.c
---- xv-3.10a.orig/xvtext.c	2013-03-14 09:37:32.129684079 -0400
-+++ xv-3.10a/xvtext.c	2013-03-14 09:38:44.288818545 -0400
+diff -NarU5 a/xvtext.c b/xvtext.c
+--- a/xvtext.c	2013-03-28 12:59:56.400084367 -0400
++++ b/xvtext.c	2013-03-28 13:02:26.056666623 -0400
 @@ -51,11 +51,11 @@
  #  define TV_MSCODE   7
  
