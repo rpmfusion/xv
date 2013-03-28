@@ -1,0 +1,29 @@
+When a selection containing no more than 256 distinct colors is copied
+from a 24-bit image, xv uses 8-bit color on the clipboard, presumably
+in order to optimize clipboard size if the selection is large.
+This patch fixes a bug that was causing the colormap it constructs
+to be stored one place off the correct position in the data structure.
+
+Signed-off-by: Mark Brader <msb@vex.net>
+Acked-by: Gabriel Somlo <somlo@cmu.edu>
+
+diff -NarU5 a/xvcut.c b/xvcut.c
+--- a/xvcut.c	2013-03-28 12:36:30.515468841 -0400
++++ b/xvcut.c	2013-03-28 12:37:34.639145150 -0400
+@@ -676,13 +676,13 @@
+ 	for (k=0; k<nc; k++,cm+=3) {
+ 	  if (pr==cm[0] && pg==cm[1] && pb==cm[2]) break;
+ 	}
+ 	if (k==nc) {
+ 	  nc++;
+-	  cimg[CIMG_CMAP + nc*3    ] = pr;
+-	  cimg[CIMG_CMAP + nc*3 + 1] = pg;
+-	  cimg[CIMG_CMAP + nc*3 + 2] = pb;
++	  cimg[CIMG_CMAP + k*3    ] = pr;
++	  cimg[CIMG_CMAP + k*3 + 1] = pg;
++	  cimg[CIMG_CMAP + k*3 + 2] = pb;
+ 	}
+ 
+ 	*dp++ = (byte) k;
+       }
+     }
