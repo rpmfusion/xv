@@ -3,7 +3,7 @@
 
 Name: xv
 Version: %{vprog}.jumbopatch.%{vjumbo}
-Release: 17%{?dist}
+Release: 18%{?dist}.1
 Summary: Interactive image display program for X
 Summary(de.UTF-8): X-basierender Bild-Viewer für praktische sämtliche Grafiken
 Summary(es.UTF-8): Visualizador de imágenes para X para cuasi todos los formatos de imágenes
@@ -30,6 +30,7 @@ Patch3: xv-FLmask.v2.1.patch
 Patch4: xv-wait.patch
 Patch5: xv-3.10a-libpng15.patch
 Patch6: xv-3.10a-namemax.patch
+Patch7: xv-3.10a-xvcut.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: libtiff-devel libpng-devel jasper-devel desktop-file-utils
 %if "%{?rhel}" != "4"
@@ -145,6 +146,9 @@ of the various image file formats supported.
 
 # NAME_MAX buffer overflow fix
 %patch6 -p1
+
+# cut/paste fix for 24bit+ images
+%patch7 -p1
 
 # Include permission to distribute
 %{__install} -m 0644 -p %{SOURCE2} .
@@ -281,6 +285,10 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %doc %{_docdir}/%{name}-%{vprog}/manuals/
 
 %changelog
+* Thu Mar 28 2013 Gabriel Somlo <somlo at cmu.edu> 3.10a.jumbopatch.20070520-18
+- patch for cut/paste bug in 24+ bit mode (by Mark Brader <msb@vex.net>)
+- further buffer overflow fix for overly long command line argument
+
 * Thu Mar 14 2013 Gabriel Somlo <somlo at cmu.edu> 3.10a.jumbopatch.20070520-17
 - additional fix for long filename buffer overflow
 
