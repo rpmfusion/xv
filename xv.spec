@@ -3,7 +3,7 @@
 
 Name: xv
 Version: %{vprog}.jumbopatch.%{vjumbo}
-Release: 18%{?dist}
+Release: 19%{?dist}
 Summary: Interactive image display program for X
 Summary(de.UTF-8): X-basierender Bild-Viewer für praktische sämtliche Grafiken
 Summary(es.UTF-8): Visualizador de imágenes para X para cuasi todos los formatos de imágenes
@@ -285,6 +285,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %doc %{_docdir}/%{name}-%{vprog}/manuals/
 
 %changelog
+* Sun Aug 31 2014 Sérgio Basto <sergio@serjux.com> - 3.10a.jumbopatch.20070520-19
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_22_Mass_Rebuild
+
 * Thu Mar 28 2013 Gabriel Somlo <somlo at cmu.edu> 3.10a.jumbopatch.20070520-18
 - patch for cut/paste bug in 24+ bit mode (by Mark Brader <msb@vex.net>)
 - further buffer overflow fix for overly long command line argument
