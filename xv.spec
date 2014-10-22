@@ -3,7 +3,7 @@
 
 Name: xv
 Version: %{vprog}.jumbopatch.%{vjumbo}
-Release: 19%{?dist}
+Release: 20%{?dist}
 Summary: Interactive image display program for X
 Summary(de.UTF-8): X-basierender Bild-Viewer für praktische sämtliche Grafiken
 Summary(es.UTF-8): Visualizador de imágenes para X para cuasi todos los formatos de imágenes
@@ -31,6 +31,7 @@ Patch4: xv-wait.patch
 Patch5: xv-3.10a-libpng15.patch
 Patch6: xv-3.10a-namemax.patch
 Patch7: xv-3.10a-xvcut.patch
+Patch8: xv-3.10a-format.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: libtiff-devel libpng-devel jasper-devel desktop-file-utils
 %if "%{?rhel}" != "4"
@@ -149,6 +150,9 @@ of the various image file formats supported.
 
 # cut/paste fix for 24bit+ images
 %patch7 -p1
+
+# fix build with -Werror=format-security
+%patch8
 
 # Include permission to distribute
 %{__install} -m 0644 -p %{SOURCE2} .
@@ -285,6 +289,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %doc %{_docdir}/%{name}-%{vprog}/manuals/
 
 %changelog
+* Wed Oct 22 2014 Paul Howarth <paul@city-fan.org> 3.10a.jumbopatch.20070520-20
+- Fix build with -Werror=format-security
+
 * Sun Aug 31 2014 Sérgio Basto <sergio@serjux.com> - 3.10a.jumbopatch.20070520-19
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_21_22_Mass_Rebuild
 
@@ -348,7 +355,7 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 * Fri Jan 18 2008 Gabriel Somlo <somlo at cmu.edu> 3.10a.jumbopatch.20070520-5
 - fix window destroy, file dialog bugs (thanks to <Ian.Collier@comlab.ox.ac.uk>)
 
-* Sun Dec 17 2007 Gabriel Somlo <somlo at cmu.edu> 3.10a.jumbopatch.20070520-4
+* Mon Dec 17 2007 Gabriel Somlo <somlo at cmu.edu> 3.10a.jumbopatch.20070520-4
 - added icon
 
 * Fri Dec 14 2007 Gabriel Somlo <somlo at cmu.edu> 3.10a.jumbopatch.20070520-3
