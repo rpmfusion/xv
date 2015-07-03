@@ -3,7 +3,7 @@
 
 Name: xv
 Version: %{vprog}.jumbopatch.%{vjumbo}
-Release: 22%{?dist}
+Release: 23%{?dist}
 Summary: Interactive image display program for X
 Summary(de.UTF-8): X-basierender Bild-Viewer für praktische sämtliche Grafiken
 Summary(es.UTF-8): Visualizador de imágenes para X para cuasi todos los formatos de imágenes
@@ -297,11 +297,14 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %doc %{_docdir}/%{name}-%{vprog}/manuals/
 
 %changelog
+* Fri Jul 03 2015 Gabriel Somlo <somlo at cmu.edu> 3.10a.jumbopatch.20070520-23
+- fix another typo in spec file
+
 * Fri Jul 03 2015 Gabriel Somlo <somlo at cmu.edu> 3.10a.jumbopatch.20070520-22
 - fix spec file (use -p1 with utf8 and smoothing patches)
 
 * Fri Jul 03 2015 Gabriel Somlo <somlo at cmu.edu> 3.10a.jumbopatch.20070520-21
-- patch by Erling A. Jacobsen to fix iTXt/utf8 png comment bug (#3131, #3704)
+- patch by Erling A. Jacobsen to fix iTXt/utf8 png comment bug (#3141, #3704)
 - patch by Erling A. Jacobsen to fix smoothing off-by-one bug (#3142)
 
 * Wed Oct 22 2014 Paul Howarth <paul@city-fan.org> 3.10a.jumbopatch.20070520-20
