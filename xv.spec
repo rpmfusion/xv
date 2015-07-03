@@ -3,7 +3,7 @@
 
 Name: xv
 Version: %{vprog}.jumbopatch.%{vjumbo}
-Release: 21%{?dist}
+Release: 22%{?dist}
 Summary: Interactive image display program for X
 Summary(de.UTF-8): X-basierender Bild-Viewer für praktische sämtliche Grafiken
 Summary(es.UTF-8): Visualizador de imágenes para X para cuasi todos los formatos de imágenes
@@ -157,10 +157,10 @@ of the various image file formats supported.
 %patch8
 
 # fix crash when viewing PNGs with iTXt/utf8 comments
-%patch9
+%patch9 -p1
 
 # fix crash due to off-by-one smoothing bug
-%patch10
+%patch10 -p1
 
 # Include permission to distribute
 %{__install} -m 0644 -p %{SOURCE2} .
@@ -297,6 +297,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %doc %{_docdir}/%{name}-%{vprog}/manuals/
 
 %changelog
+* Fri Jul 03 2015 Gabriel Somlo <somlo at cmu.edu> 3.10a.jumbopatch.20070520-22
+- fix spec file (use -p1 with utf8 and smoothing patches)
+
 * Fri Jul 03 2015 Gabriel Somlo <somlo at cmu.edu> 3.10a.jumbopatch.20070520-21
 - patch by Erling A. Jacobsen to fix iTXt/utf8 png comment bug (#3131, #3704)
 - patch by Erling A. Jacobsen to fix smoothing off-by-one bug (#3142)
