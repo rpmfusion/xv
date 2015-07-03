@@ -1,0 +1,16 @@
+Prevents crash when encountering PNGs with utf8 comments
+
+Signed-off-by: Erling A. Jacobsen <linuxcub@email.dk>
+
+diff -ur xv-3.10a-orig/xvpng.c xv-3.10a/xvpng.c
+--- xv-3.10a-orig/xvpng.c	2014-01-21 14:56:24.168673164 +0100
++++ xv-3.10a/xvpng.c	2014-01-21 15:01:02.567883070 +0100
+@@ -1149,7 +1149,7 @@
+ 
+     for (i = 0; i < _num_text; i++)
+       commentsize += strlen(_text[i].key) + 1 +
+-                     _text[i].text_length + 2;
++                     (_text[i].text_length ? _text[i].text_length : _text[i].itxt_length) + 2;
+ 
+     if ((pinfo->comment = malloc(commentsize)) == NULL) {
+       png_warning(png_ptr,"can't allocate comment string");

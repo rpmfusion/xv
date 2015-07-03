@@ -3,7 +3,7 @@
 
 Name: xv
 Version: %{vprog}.jumbopatch.%{vjumbo}
-Release: 20%{?dist}
+Release: 21%{?dist}
 Summary: Interactive image display program for X
 Summary(de.UTF-8): X-basierender Bild-Viewer für praktische sämtliche Grafiken
 Summary(es.UTF-8): Visualizador de imágenes para X para cuasi todos los formatos de imágenes
@@ -32,6 +32,8 @@ Patch5: xv-3.10a-libpng15.patch
 Patch6: xv-3.10a-namemax.patch
 Patch7: xv-3.10a-xvcut.patch
 Patch8: xv-3.10a-format.patch
+Patch9: xv-3.10a-png-itxt.patch
+Patch10: xv-3.10a-smooth-fix2.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: libtiff-devel libpng-devel jasper-devel desktop-file-utils
 %if "%{?rhel}" != "4"
@@ -153,6 +155,12 @@ of the various image file formats supported.
 
 # fix build with -Werror=format-security
 %patch8
+
+# fix crash when viewing PNGs with iTXt/utf8 comments
+%patch9
+
+# fix crash due to off-by-one smoothing bug
+%patch10
 
 # Include permission to distribute
 %{__install} -m 0644 -p %{SOURCE2} .
@@ -289,6 +297,10 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %doc %{_docdir}/%{name}-%{vprog}/manuals/
 
 %changelog
+* Fri Jul 03 2015 Gabriel Somlo <somlo at cmu.edu> 3.10a.jumbopatch.20070520-21
+- patch by Erling A. Jacobsen to fix iTXt/utf8 png comment bug (#3131, #3704)
+- patch by Erling A. Jacobsen to fix smoothing off-by-one bug (#3142)
+
 * Wed Oct 22 2014 Paul Howarth <paul@city-fan.org> 3.10a.jumbopatch.20070520-20
 - Fix build with -Werror=format-security
 
