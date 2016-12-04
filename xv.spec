@@ -297,7 +297,7 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %doc %{_docdir}/%{name}-%{vprog}/manuals/
 
 %changelog
-* Sun Dec  4 2014 Paul Howarth <paul@city-fan.org> 3.10a.jumbopatch.20070520-24
+* Sun Dec  4 2016 Paul Howarth <paul@city-fan.org> 3.10a.jumbopatch.20070520-24
 - rebuild for libjasper.so.4 (jasper 2.0.2) in Rawhide
 
 * Fri Jul 03 2015 Gabriel Somlo <somlo at cmu.edu> 3.10a.jumbopatch.20070520-23
