@@ -1,0 +1,341 @@
+--- Imakefile
++++ Imakefile	2008-05-23 13:21:23.000000000 +0200
+@@ -150,7 +150,7 @@ SYS_LIBRARIES=        -lm
+ 
+ 
+ DEPLIBS = $(LIBJPEG) $(LIBTIFF)
+-LOCAL_LIBRARIES = $(XLIB) $(DEPLIBS)
++LOCAL_LIBRARIES = $(XLIB) $(XTOOLLIB) $(DEPLIBS)
+ 
+ DEFINES= $(SCO) $(UNIX) $(NODIRENT) $(VPRINTF) $(TIMERS) \
+ 	$(HPUX7) $(JPEG) $(TIFF) $(PDS) $(DXWM) $(RAND) \
+--- xv.c
++++ xv.c	2008-05-23 13:03:36.000000000 +0200
+@@ -159,6 +159,8 @@ static int  curstype, stdinflag, browseM
+ static int  nodecor;
+ static double gamval, rgamval, ggamval, bgamval;
+ 
++XtAppContext context;
++
+ /*******************************************/
+ int main(argc, argv)
+      int    argc;
+@@ -173,6 +175,12 @@ int main(argc, argv)
+   Window rootReturn, parentReturn, *children;
+   unsigned int numChildren, rootDEEP;
+ 
++#ifdef AUTO_EXPAND
++  signal(SIGHUP, SIG_IGN);
++#endif
++#ifndef NOSIGNAL
++  signal(SIGQUIT, SIG_IGN);
++#endif
+ 
+ #ifdef VMS
+   /* convert VMS-style arguments to unix names and glob */
+@@ -279,11 +279,6 @@ int main(argc, argv)
+   if (!tmpdir) FatalError("can't malloc 'tmpdir'\n");
+   strcpy(tmpdir, tmpstr);
+ 
+-#ifdef AUTO_EXPAND
+-  Vdinit();
+-  vd_handler_setup();
+-#endif
+-
+   /* init command-line options flags */
+   infogeom = DEFINFOGEOM;  ctrlgeom = DEFCTRLGEOM;
+   gamgeom  = DEFGAMGEOM;   browgeom = DEFBROWGEOM;
+@@ -378,7 +383,10 @@ int main(argc, argv)
+   parseResources(argc,argv);
+   parseCmdLine(argc, argv);
+   verifyArgs();
++#ifdef AUTO_EXPAND
++  Vdinit();
++  vd_handler_setup();
++#endif
+-
+ 
+ #if 0
+ #ifdef XVEXECPATH
+@@ -1245,6 +1253,10 @@ static void parseResources(argc, argv)
+     exit(1);
+   }
+ 
++  i = 0;
++  XtToolkitInitialize();
++  context = XtCreateApplicationContext();
++  XtDisplayInitialize(context, theDisp, NULL, "XV", NULL, 0, &i, argv);
+ 
+ 
+   if (rd_str ("aspect")) {
+--- xv.h
++++ xv.h	2008-05-23 12:25:12.000000000 +0200
+@@ -1946,10 +1946,6 @@ int   Rmvdir               PARM((char *)
+ int   Movevdir             PARM((char *, char *));
+ int   Isarchive            PARM((char *));
+ int   Isvdir               PARM((char *));
+-void  vd_HUPhandler        PARM((void));
+-void  vd_handler           PARM((int));
+-int   vd_Xhandler          PARM((Display *, XErrorEvent *));
+-int   vd_XIOhandler        PARM((Display *));
+ void  vd_handler_setup     PARM((void));
+ 
+ 
+--- xvevent.c
++++ xvevent.c	2008-05-23 12:18:44.000000000 +0200
+@@ -58,6 +58,7 @@ static void CropKey            PARM((int
+ static void TrackPicValues     PARM((int, int));
+ static int  CheckForConfig     PARM((void));
+ static Bool IsConfig           PARM((Display *, XEvent *, char *));
++static void QuitOnInterrupt    PARM((XtPointer dummy, XtSignalId* Id));
+ static void onInterrupt        PARM((int));
+ 
+ static void   Paint            PARM((void));
+@@ -74,6 +75,11 @@ static void   annotatePic      PARM((voi
+ static int    debkludge_offx;
+ static int    debkludge_offy;
+ 
++#ifndef NOSIGNAL
++static XtSignalId IdQuit = 0;
++extern XtAppContext context;
++#endif
++
+ /****************/
+ int EventLoop()
+ /****************/
+@@ -90,6 +96,9 @@ int EventLoop()
+ 
+ 
+ #ifndef NOSIGNAL
++  if (IdQuit)
++    XtRemoveSignal(IdQuit);
++  IdQuit = XtAppAddSignal(context, QuitOnInterrupt, NULL);
+   signal(SIGQUIT, onInterrupt);
+ #endif
+ 
+@@ -140,7 +149,11 @@ int EventLoop()
+        in real-time (polling, flashing the selection, etc.) get next event */
+     if ((waitsec<0.0 && !polling && !HaveSelection()) || XPending(theDisp)>0)
+     {
++#ifndef NOSIGNAL
++      XtAppNextEvent(context, &event);
++#else
+       XNextEvent(theDisp, &event);
++#endif
+       retval = HandleEvent(&event,&done);
+     }
+ 
+@@ -2681,8 +2694,7 @@ int xvErrorHandler(disp, err)
+ 
+ 
+ /************************************************************************/
+-static void onInterrupt(i)
+-     int i;
++static void QuitOnInterrupt(XtPointer dummy, XtSignalId* Id)
+ {
+   /* but first, if any input-grabbing popups are active, we have to 'cancel'
+      them. */
+@@ -2727,6 +2739,10 @@ static void onInterrupt(i)
+   frominterrupt = 1;
+ }
+ 
++static void onInterrupt(int i)
++{
++  XtNoticeSignal(IdQuit);
++}
+ 
+ 
+ 
+--- xvgrab.c
++++ xvgrab.c	2008-05-26 14:06:49.591033050 +0200
+@@ -69,6 +69,10 @@ static int    CountColors24       PARM((
+ static int    Trivial24to8        PARM((byte *, int, int, byte *,
+ 					byte *, byte *, byte *, int));
+ 
++#ifndef NOSIGNAL
++extern XtAppContext context;
++#endif
++
+ /***********************************/
+ int Grab()
+ {
+@@ -113,7 +117,11 @@ int Grab()
+       if (t >= startT + grabDelay) break;
+       if (XPending(theDisp)>0) {
+ 	XEvent evt;
++#ifndef NOSIGNAL
++	XtAppNextEvent(context, &evt);
++#else
+ 	XNextEvent(theDisp, &evt);
++#endif
+ 	i = HandleEvent(&evt, &done);
+ 	if (done) {                    /* only 'new image' cmd accepted=quit */
+ 	  if (i==QUIT) Quit(0);
+@@ -175,7 +183,11 @@ int Grab()
+       }
+ 
+       /* continue to handle events while waiting... */
++#ifndef NOSIGNAL
++      XtAppNextEvent(context, &evt);
++#else
+       XNextEvent(theDisp, &evt);
++#endif
+       i = HandleEvent(&evt, &done);
+       if (done) {                    /* only 'new image' cmd accepted=quit */
+ 	if (i==QUIT) {
+@@ -365,7 +377,11 @@ int Grab()
+       state = 0;
+       while (state != 3) {
+ 	XEvent event;
++#ifndef NOSIGNAL
++	XtAppNextEvent(context, &event);
++#else
+ 	XNextEvent(theDisp, &event);
++#endif
+ 	HandleEvent(&event, &i);
+ 
+ 	if (!(state&1) && event.type == MapNotify &&
+--- xvpcd.c
++++ xvpcd.c	2008-05-26 14:08:19.428156862 +0200
+@@ -114,6 +114,10 @@ static  byte  Y[351] = {
+   255
+ };
+ 
++#ifndef NOSIGNAL
++extern XtAppContext context;
++#endif
++
+ /*******************************************/
+ /* The size should be -1 for the popup to ask otherwise fast is assumed */
+ /* returns '1' on success */
+@@ -259,7 +263,11 @@ data for 16 base:
+     while (leaveitup) {
+       int i;
+       XEvent event;
++#ifndef NOSIGNAL
++      XtAppNextEvent(context, &event);
++#else
+       XNextEvent(theDisp, &event);
++#endif
+       HandleEvent(&event, &i);
+     }
+     /* At this point goforit and size will have been set */
+--- xvpic2.c
++++ xvpic2.c	2008-05-26 14:09:26.354952942 +0200
+@@ -321,6 +321,10 @@ struct _form_tab {
+ #define P2BM 2
+ #define P2BI 3
+ 
++#ifndef NOSIGNAL
++extern XtAppContext context;
++#endif
++
+ /* The main routine to load a PIC2 file. */
+ int LoadPIC2(fname, pinfo, quick)
+ char *fname;
+@@ -3541,7 +3545,11 @@ int cmd;
+ 	x_offset = atoi(x_offsetp);
+ 	y_offset = atoi(y_offsetp);
+ 
++#ifndef NOSIGNAL
++	XtAppNextEvent(context, &event);
++#else
+         XNextEvent(theDisp, &event);
++#endif
+ 	HandleEvent(&event, &i);
+ 
+ 	writePIC2();
+--- xvpopup.c
++++ xvpopup.c	2008-05-26 14:10:21.880590702 +0200
+@@ -130,6 +130,9 @@ static int         padLoadLen = 0;
+ static const char *padLoadNames[PAD_MAXDEFLEN];
+ static const char *padLoadVals [PAD_MAXDEFLEN];
+ 
++#ifndef NOSIGNAL
++extern XtAppContext context;
++#endif
+ 
+ /***************************************************/
+ void CenterMapWindow(win, dx, dy, w, h)
+@@ -311,7 +314,11 @@ static int doPopUp(txt, labels, n, popty
+ 
+   /* block until this window gets closed */
+   while (popUp) {
++#ifndef NOSIGNAL
++    XtAppNextEvent(context, &event);
++#else
+     XNextEvent(theDisp, &event);
++#endif
+     HandleEvent(&event, &i);
+   }
+ 
+--- xvvd.c
++++ xvvd.c	2008-05-26 14:02:00.241635107 +0200
+@@ -26,6 +26,11 @@ static int   vd_UncompressFile		PARM((ch
+ static int   vd_tarc			PARM((char *));
+ static u_int vd_tar_sumchk		PARM((char *));
+ 
++static XtSignalId IdHup = 0;
++static XtSignalId IdInt = 0;
++static int   UsedSignal = 0;
++extern XtAppContext context;
++
+ #define VD_VDTABLESIZE	100
+ 
+ #define VD_ERR -2
+@@ -1041,7 +1046,15 @@ char *prog, *mode;
+  * If XV end by C-c, there are dust of directory which name is .xvvd???,
+  * made by xvvd. Then, I handle SIGINT, and add good finish.
+  */
+-void vd_HUPhandler()
++static void vd_HUPhandler(int sig)
++{
++    XtNoticeSignal(IdHup);
++#if defined(SYSV) || defined(SVR4) || defined(__USE_XOPEN_EXTENDED)
++    signal(SIGHUP, (void (*)PARM((int))) vd_HUPhandler);
++#endif
++}
++
++static void HUPhandler(XtPointer dummy, XtSignalId* Id)
+ {
+ #if defined(SYSV) || defined(SVR4) || defined(__USE_XOPEN_EXTENDED)
+     sighold(SIGHUP);
+@@ -1054,19 +1067,23 @@ void vd_HUPhandler()
+ 
+ #if defined(SYSV) || defined(SVR4) || defined(__USE_XOPEN_EXTENDED)
+     sigrelse(SIGHUP);
+-    signal(SIGHUP, (void (*)PARM((int))) vd_HUPhandler);
+ #else
+     sigsetmask(mask);
+ #endif
+ }
+ 
+-void vd_handler(sig)
+-int sig;
++static void vd_handler(int sig)
++{
++    UsedSignal = sig;
++    XtNoticeSignal(IdInt);
++}
++
++static void INThandler(XtPointer dummy, XtSignalId* Id)
+ {
+ #if defined(SYSV) || defined(SVR4) || defined(__USE_XOPEN_EXTENDED)
+-    sighold(sig);
++    sighold(UsedSignal);
+ #else
+-    sigblock(sigmask(sig));
++    sigblock(sigmask(UsedSignal));
+ #endif
+ 
+     Quit(1); /*exit(1);*/
+@@ -1091,6 +1108,9 @@ Display *disp;
+ 
+ void vd_handler_setup()
+ {
++    IdHup = XtAppAddSignal(context, HUPhandler, NULL);
++    IdInt = XtAppAddSignal(context, INThandler, NULL);
++
+     signal(SIGHUP, (void (*)PARM((int))) vd_HUPhandler);
+     signal(SIGINT, (void (*)PARM((int))) vd_handler);
+     signal(SIGTERM,(void (*)PARM((int))) vd_handler);
