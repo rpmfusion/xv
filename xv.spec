@@ -1,9 +1,9 @@
-%define vprog 3.10a
-%define vjumbo 20070520
+%global vprog 3.10a
+%global vjumbo 20070520
 
 Name: xv
 Version: %{vprog}.jumbopatch.%{vjumbo}
-Release: 26%{?dist}
+Release: 27%{?dist}
 Summary: Interactive image display program for X
 Summary(de.UTF-8): X-basierender Bild-Viewer für praktische sämtliche Grafiken
 Summary(es.UTF-8): Visualizador de imágenes para X para cuasi todos los formatos de imágenes
@@ -34,18 +34,16 @@ Patch7: xv-3.10a-xvcut.patch
 Patch8: xv-3.10a-format.patch
 Patch9: xv-3.10a-png-itxt.patch
 Patch10: xv-3.10a-smooth-fix2.patch
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-BuildRequires: libtiff-devel libpng-devel jasper-devel desktop-file-utils
-%if "%{?rhel}" != "4"
-BuildRequires: libX11-devel libXt-devel
-%global xlibdir %{_libdir}
-%else
-BuildRequires: xorg-x11-devel
-Requires: man
-Requires(post): desktop-file-utils
-Requires(postun): desktop-file-utils
-%global xlibdir /usr/X11R6/%{_lib}
-%endif
+Patch11: xv-3.10a-signal.patch
+
+BuildRequires: libtiff-devel
+BuildRequires: libpng-devel
+BuildRequires: jasper-devel
+BuildRequires: desktop-file-utils
+BuildRequires: libX11-devel
+BuildRequires: libXt-devel
+
+
 Requires: hicolor-icon-theme
 
 %description
@@ -114,9 +112,7 @@ RGB, XPM, Targa, XWD, PostScript(TM) та PM. Xv також вміє робит�
 %package doc
 Summary: Manuals in various formats for the xv image viewer
 Group: Documentation
-%if 0%{?fedora} >= 10 || 0%{?rhel} >= 6
 BuildArch: noarch
-%endif
 
 %description doc
 Manuals in various formats for the xv image viewer, plus technical details
@@ -162,6 +158,10 @@ of the various image file formats supported.
 # fix crash due to off-by-one smoothing bug
 %patch10 -p1
 
+# Hopefully fix rfbz#3044
+%patch11 -p0
+
+
 # Include permission to distribute
 %{__install} -m 0644 -p %{SOURCE2} .
 
@@ -196,17 +196,15 @@ for doc in docs/manuals/xv*.ps; do
 done
 
 # Fix directory location of X libs
-%{__sed} -i -e 's@-L/usr/X11R6/lib[[:space:]]@-L%{xlibdir} @' Makefile
+%{__sed} -i -e 's@-L/usr/X11R6/lib[[:space:]]@-L%{_libdir} -lXt @' Makefile
 
 %build
-%{__make} %{?_smp_mflags}
+%{make_build}
 
 %install
-%{__rm} -rf %{buildroot}
-%{__make} install DESTDIR=%{buildroot}
+%{make_install}
 
 desktop-file-install \
-  --vendor=livna \
   --dir=%{buildroot}%{_datadir}/applications \
   %{SOURCE3}
 
@@ -241,28 +239,8 @@ do
   %{__cp} -a ${doc} %{buildroot}%{_docdir}/%{name}-%{vprog}/
 done
 
-%clean
-%{__rm} -rf %{buildroot}
-
-%post
-touch --no-create %{_datadir}/icons/hicolor &>/dev/null || :
-update-desktop-database &> /dev/null || :
-
-%postun
-if [ $1 -eq 0 ] ; then
-  touch --no-create %{_datadir}/icons/hicolor &>/dev/null || :
-  gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
-fi
-update-desktop-database &> /dev/null || :
-
-%if "%{?rhel}" != "4"
-# EL-4 doesn't have %%posttrans, nor does it have an icon cache to maintain
-%posttrans
-gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
-%endif
 
 %files
-%defattr(-,root,root,-)
 %doc %{_docdir}/%{name}-%{vprog}/BUGS
 %doc %{_docdir}/%{name}-%{vprog}/CHANGELOG
 %doc %{_docdir}/%{name}-%{vprog}/copyright.h
@@ -279,7 +257,7 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_bindir}/xcmap
 %{_bindir}/xv
 %{_bindir}/xvpictoppm
-%{_datadir}/applications/livna-xv.desktop
+%{_datadir}/applications/xv.desktop
 %{_datadir}/icons/hicolor/48x48/apps/xv.png
 %{_mandir}/man1/bggen.1*
 %{_mandir}/man1/vdcomp.1*
@@ -290,13 +268,15 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %lang(pl) %{_mandir}/pl/man1/xvpictoppm.1*
 
 %files doc
-%defattr(-,root,root,-)
 %doc %{_docdir}/%{name}-%{vprog}/README.docs
 %doc %{_docdir}/%{name}-%{vprog}/bigxv.jpg
 %doc %{_docdir}/%{name}-%{vprog}/formats/
 %doc %{_docdir}/%{name}-%{vprog}/manuals/
 
 %changelog
+* Wed Feb 07 2018 Leigh Scott <leigh123linux@googlemail.com> - 3.10a.jumbopatch.20070520-27
+- Hopefully fix rfbz#3044
+
 * Thu Aug 31 2017 RPM Fusion Release Engineering <kwizart@rpmfusion.org> - 3.10a.jumbopatch.20070520-26
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Mass_Rebuild
 
