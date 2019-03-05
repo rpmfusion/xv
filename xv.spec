@@ -36,6 +36,7 @@ Patch9: xv-3.10a-png-itxt.patch
 Patch10: xv-3.10a-smooth-fix2.patch
 Patch11: xv-3.10a-signal.patch
 
+BuildRequires: gcc
 BuildRequires: libtiff-devel
 BuildRequires: libpng-devel
 BuildRequires: jasper-devel
