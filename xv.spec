@@ -3,7 +3,7 @@
 
 Name: xv
 Version: %{vprog}.jumbopatch.%{vjumbo}
-Release: 31%{?dist}
+Release: 32%{?dist}
 Summary: Interactive image display program for X
 Summary(de.UTF-8): X-basierender Bild-Viewer für praktische sämtliche Grafiken
 Summary(es.UTF-8): Visualizador de imágenes para X para cuasi todos los formatos de imágenes
@@ -275,6 +275,9 @@ done
 %doc %{_docdir}/%{name}-%{vprog}/manuals/
 
 %changelog
+* Sat Aug 10 2019 RPM Fusion Release Engineering <leigh123linux@gmail.com> - 3.10a.jumbopatch.20070520-32
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_31_Mass_Rebuild
+
 * Tue Mar 05 2019 RPM Fusion Release Engineering <leigh123linux@gmail.com> - 3.10a.jumbopatch.20070520-31
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
 
