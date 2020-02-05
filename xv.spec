@@ -1,3 +1,4 @@
+%define _legacy_common_support 1
 %global vprog 3.10a
 %global vjumbo 20070520
 
