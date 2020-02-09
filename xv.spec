@@ -1,10 +1,9 @@
-%define _legacy_common_support 1
 %global vprog 3.10a
 %global vjumbo 20070520
 
 Name: xv
 Version: %{vprog}.jumbopatch.%{vjumbo}
-Release: 33%{?dist}
+Release: 34%{?dist}
 Summary: Interactive image display program for X
 Summary(de.UTF-8): X-basierender Bild-Viewer für praktische sämtliche Grafiken
 Summary(es.UTF-8): Visualizador de imágenes para X para cuasi todos los formatos de imágenes
@@ -36,6 +35,7 @@ Patch8: xv-3.10a-format.patch
 Patch9: xv-3.10a-png-itxt.patch
 Patch10: xv-3.10a-smooth-fix2.patch
 Patch11: xv-3.10a-signal.patch
+Patch12: xv-3.10a-gcc10.patch
 
 BuildRequires: gcc
 BuildRequires: libtiff-devel
@@ -124,8 +124,8 @@ of the various image file formats supported.
 %setup -q -n %{name}-%{vprog} -b 1 -a 5 -a 6
 
 # Apply 20070520 jumbo enhancement patch, bundled with %%{SOURCE1}
-%{__patch} -p1 < ../%{name}-%{vprog}-jumbo-fix-enh-patch-%{vjumbo}.txt
-%{__rm} ../%{name}-%{vprog}-jumbo-fix-enh-patch-%{vjumbo}.txt
+patch -p1 < ../%{name}-%{vprog}-jumbo-fix-enh-patch-%{vjumbo}.txt
+rm ../%{name}-%{vprog}-jumbo-fix-enh-patch-%{vjumbo}.txt
 
 # Fix compiler options, install directories; enable JPEG 2000 support
 %patch0 -p1
@@ -163,42 +163,44 @@ of the various image file formats supported.
 # Hopefully fix rfbz#3044
 %patch11 -p0
 
+# Fix FTBFS with GCC 10
+%patch12 -p0
 
 # Include permission to distribute
-%{__install} -m 0644 -p %{SOURCE2} .
+install -m 0644 -p %{SOURCE2} .
 
 # Recode docs as UTF-8
 for F in README.jumbo copyright.h fi/man1/xv.1; do
-  iconv -f iso88591 -t utf8 ${F} -o ${F}.utf8 && %{__mv} -f ${F}.utf8 ${F}
+  iconv -f iso88591 -t utf8 ${F} -o ${F}.utf8 && mv -f ${F}.utf8 ${F}
 done
 for F in pl/man1/xvpictoppm.1; do
-  iconv -f iso-8859-2 -t utf8 ${F} -o ${F}.utf8 && %{__mv} -f ${F}.utf8 ${F}
+  iconv -f iso-8859-2 -t utf8 ${F} -o ${F}.utf8 && mv -f ${F}.utf8 ${F}
 done
 for F in 00_README CPMASK; do
-  iconv -f EUC-JP -t utf8 ${F} -o ${F}.utf8 && %{__mv} -f ${F}.utf8 ${F}
+  iconv -f EUC-JP -t utf8 ${F} -o ${F}.utf8 && mv -f ${F}.utf8 ${F}
 done
 
 # Reorganize docs
 #
 # Note: Man pages for p?m file formats would conflict with netpbm-progs if installed under %%{_mandir}
-%{__mv} 00_README README.FLmask
-%{__mv} docs/README README.docs
-%{__mkdir} docs/{formats,manuals}/
-%{__mv} docs/{bmp.doc,epsf.ps,gif*,p[bgp]m.5,xpm.ps} docs/formats/
-%{__mv} docs/{xvdocs.{ps,pdf},xvtitle.ps} docs/manuals/
+mv 00_README README.FLmask
+mv docs/README README.docs
+mkdir docs/{formats,manuals}/
+mv docs/{bmp.doc,epsf.ps,gif*,p[bgp]m.5,xpm.ps} docs/formats/
+mv docs/{xvdocs.{ps,pdf},xvtitle.ps} docs/manuals/
 
 # HTML manual
-%{__mv} -f xvman310a docs/manuals/html
+mv -f xvman310a docs/manuals/html
 
 # Fix line endings
 for doc in docs/manuals/xv*.ps; do
-  %{__sed} -e 's/\r$//' ${doc} > ${doc}.unix
+  sed -e 's/\r$//' ${doc} > ${doc}.unix
   touch -r ${doc} ${doc}.unix
-  %{__mv} -f ${doc}.unix ${doc}
+  mv -f ${doc}.unix ${doc}
 done
 
 # Fix directory location of X libs
-%{__sed} -i -e 's@-L/usr/X11R6/lib[[:space:]]@-L%{_libdir} -lXt @' Makefile
+sed -i -e 's@-L/usr/X11R6/lib[[:space:]]@-L%{_libdir} -lXt @' Makefile
 
 %build
 %{make_build}
@@ -210,17 +212,17 @@ desktop-file-install \
   --dir=%{buildroot}%{_datadir}/applications \
   %{SOURCE3}
 
-%{__install} -D -p -m 0644 %{SOURCE4} \
+install -D -p -m 0644 %{SOURCE4} \
   %{buildroot}%{_datadir}/icons/hicolor/48x48/apps/%{name}.png
 
 # Non-English man pages
-%{__install} -D -p -m 0644 fi/man1/xv.1 \
+install -D -p -m 0644 fi/man1/xv.1 \
   %{buildroot}%{_mandir}/fi/man1/xv.1
-%{__install} -D -p -m 0644 pl/man1/xvpictoppm.1 \
+install -D -p -m 0644 pl/man1/xvpictoppm.1 \
   %{buildroot}%{_mandir}/pl/man1/xvpictoppm.1
 
 # Populate the docs directory
-%{__mkdir_p} %{buildroot}%{_docdir}/%{name}-%{vprog}/
+mkdir -p %{buildroot}%{_docdir}/%{name}-%{vprog}/
 for doc in \
   BUGS \
   CHANGELOG \
@@ -238,7 +240,7 @@ for doc in \
   docs/formats/ \
   docs/manuals/
 do
-  %{__cp} -a ${doc} %{buildroot}%{_docdir}/%{name}-%{vprog}/
+  cp -a ${doc} %{buildroot}%{_docdir}/%{name}-%{vprog}/
 done
 
 
@@ -276,6 +278,9 @@ done
 %doc %{_docdir}/%{name}-%{vprog}/manuals/
 
 %changelog
+* Sun Feb  9 2020 Paul Howarth <paul@city-fan.org> - 3.10a.jumbopatch.20070520-34
+- Fix FTBFS with GCC 10
+
 * Wed Feb 05 2020 RPM Fusion Release Engineering <leigh123linux@gmail.com> - 3.10a.jumbopatch.20070520-33
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_32_Mass_Rebuild
 
