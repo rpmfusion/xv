@@ -36,6 +36,7 @@ Patch9: xv-3.10a-png-itxt.patch
 Patch10: xv-3.10a-smooth-fix2.patch
 Patch11: xv-3.10a-signal.patch
 Patch12: xv-3.10a-gcc10.patch
+Patch13: xv-3.10a-jas_memdump.patch
 
 BuildRequires: gcc
 BuildRequires: libtiff-devel
@@ -166,6 +167,9 @@ rm ../%{name}-%{vprog}-jumbo-fix-enh-patch-%{vjumbo}.txt
 # Fix FTBFS with GCC 10
 %patch12 -p0
 
+# Fix jas_memdump replacement function
+%patch13 -p0
+
 # Include permission to distribute
 install -m 0644 -p %{SOURCE2} .
 
@@ -278,7 +282,10 @@ done
 %doc %{_docdir}/%{name}-%{vprog}/manuals/
 
 %changelog
-* Thu Feb 04 2021 RPM Fusion Release Engineering <leigh123linux@gmail.com> - 3.10a.jumbopatch.20070520-36
+* Tue Mar  2 2021 Paul Howarth <paul@city-fan.org> - 3.10a.jumbopatch.20070520-36
+- Fix jas_memdump replacement function
+
+* Thu Feb 04 2021 RPM Fusion Release Engineering <leigh123linux@gmail.com>
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_34_Mass_Rebuild
 
 * Wed Aug 19 2020 RPM Fusion Release Engineering <leigh123linux@gmail.com> - 3.10a.jumbopatch.20070520-35
