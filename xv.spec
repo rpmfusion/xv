@@ -14,7 +14,6 @@ Summary(ru.UTF-8): Программа для просмотра и преобр�
 Summary(tr.UTF-8): X tabanlı resim görüntüleyici
 Summary(uk.UTF-8): Програма для перегляду та перетворення файлів зображень для X
 License: Shareware
-Group: Applications/Multimedia
 URL: http://www.trilon.com/xv/xv.html
 Source0: ftp://ftp.trilon.com/pub/xv/%{name}-%{vprog}.tar.gz
 Source1: http://downloads.sourceforge.net/png-mng/%{name}-%{vprog}-jumbo-patches-%{vjumbo}.tar.gz
@@ -114,7 +113,6 @@ RGB, XPM, Targa, XWD, PostScript(TM) та PM. Xv також вміє робит�
 
 %package doc
 Summary: Manuals in various formats for the xv image viewer
-Group: Documentation
 BuildArch: noarch
 
 %description doc
@@ -167,8 +165,10 @@ rm ../%{name}-%{vprog}-jumbo-fix-enh-patch-%{vjumbo}.txt
 # Fix FTBFS with GCC 10
 %patch12 -p0
 
-# Fix jas_memdump replacement function
+# Fix jas_memdump replacement function if necessary
+if grep --silent --recursive 'jas_memdump.*const void' /usr/include/jasper; then
 %patch13 -p0
+fi
 
 # Include permission to distribute
 install -m 0644 -p %{SOURCE2} .
