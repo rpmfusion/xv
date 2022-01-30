@@ -3,7 +3,7 @@
 
 Name: xv
 Version: %{vprog}.jumbopatch.%{vjumbo}
-Release: 38%{?dist}
+Release: 39%{?dist}
 Summary: Interactive image display program for X
 Summary(de.UTF-8): X-basierender Bild-Viewer für praktische sämtliche Grafiken
 Summary(es.UTF-8): Visualizador de imágenes para X para cuasi todos los formatos de imágenes
@@ -35,7 +35,7 @@ Patch9: xv-3.10a-png-itxt.patch
 Patch10: xv-3.10a-smooth-fix2.patch
 Patch11: xv-3.10a-signal.patch
 Patch12: xv-3.10a-gcc10.patch
-Patch13: xv-3.10a-jas_memdump.patch
+Patch13: xv-3.10a-20220127-jasper.patch
 
 BuildRequires: gcc
 BuildRequires: libtiff-devel
@@ -126,9 +126,6 @@ of the various image file formats supported.
 patch -p1 < ../%{name}-%{vprog}-jumbo-fix-enh-patch-%{vjumbo}.txt
 rm ../%{name}-%{vprog}-jumbo-fix-enh-patch-%{vjumbo}.txt
 
-# Fix compiler options, install directories; enable JPEG 2000 support
-%patch0 -p1
-
 # Interim jumbo patch update
 %patch1 -p1
 
@@ -165,10 +162,11 @@ rm ../%{name}-%{vprog}-jumbo-fix-enh-patch-%{vjumbo}.txt
 # Fix FTBFS with GCC 10
 %patch12 -p0
 
-# Fix jas_memdump replacement function if necessary
-if grep --silent --recursive 'jas_memdump.*const void' /usr/include/jasper; then
+# Fix Jasper support to use proper library APIs (patch from Jasper upstream maintainer)
 %patch13 -p0
-fi
+
+# Fix compiler options, install directories; enable JPEG 2000 support
+%patch0 -p1
 
 # Include permission to distribute
 install -m 0644 -p %{SOURCE2} .
@@ -282,6 +280,10 @@ done
 %doc %{_docdir}/%{name}-%{vprog}/manuals/
 
 %changelog
+* Wed Feb 16 2022 Paul Howarth <paul@city-fan.org> - 3.10a.jumbopatch.20070520-39
+- Fix Jasper support to use proper library APIs (patch from Michael Adams,
+  Jasper upstream maintainer)
+
 * Thu Feb 10 2022 RPM Fusion Release Engineering <sergiomb@rpmfusion.org> - 3.10a.jumbopatch.20070520-38
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_36_Mass_Rebuild
 
