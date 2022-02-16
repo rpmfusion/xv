@@ -36,6 +36,7 @@ Patch10: xv-3.10a-smooth-fix2.patch
 Patch11: xv-3.10a-signal.patch
 Patch12: xv-3.10a-gcc10.patch
 Patch13: xv-3.10a-20220127-jasper.patch
+Patch14: xv-3.10a-c99isms.patch
 
 BuildRequires: gcc
 BuildRequires: libtiff-devel
@@ -164,6 +165,9 @@ rm ../%{name}-%{vprog}-jumbo-fix-enh-patch-%{vjumbo}.txt
 
 # Fix Jasper support to use proper library APIs (patch from Jasper upstream maintainer)
 %patch13 -p0
+
+# Fix some C99-isms introduced in previous patch, breaks build with older compilers
+%patch14 -p2
 
 # Fix compiler options, install directories; enable JPEG 2000 support
 %patch0 -p1
