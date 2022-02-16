@@ -37,6 +37,7 @@ Patch11: xv-3.10a-signal.patch
 Patch12: xv-3.10a-gcc10.patch
 Patch13: xv-3.10a-20220127-jasper.patch
 Patch14: xv-3.10a-c99isms.patch
+Patch15: xv-3.10a-utf8-docs.patch
 
 BuildRequires: gcc
 BuildRequires: libtiff-devel
@@ -172,19 +173,11 @@ rm ../%{name}-%{vprog}-jumbo-fix-enh-patch-%{vjumbo}.txt
 # Fix compiler options, install directories; enable JPEG 2000 support
 %patch0 -p1
 
+# Recode docs as UTF-8
+%patch15 -p2
+
 # Include permission to distribute
 install -m 0644 -p %{SOURCE2} .
-
-# Recode docs as UTF-8
-for F in README.jumbo copyright.h fi/man1/xv.1; do
-  iconv -f iso88591 -t utf8 ${F} -o ${F}.utf8 && mv -f ${F}.utf8 ${F}
-done
-for F in pl/man1/xvpictoppm.1; do
-  iconv -f iso-8859-2 -t utf8 ${F} -o ${F}.utf8 && mv -f ${F}.utf8 ${F}
-done
-for F in 00_README CPMASK; do
-  iconv -f EUC-JP -t utf8 ${F} -o ${F}.utf8 && mv -f ${F}.utf8 ${F}
-done
 
 # Reorganize docs
 #
@@ -287,6 +280,7 @@ done
 * Wed Feb 16 2022 Paul Howarth <paul@city-fan.org> - 3.10a.jumbopatch.20070520-39
 - Fix Jasper support to use proper library APIs (patch from Michael Adams,
   Jasper upstream maintainer)
+- Use a patch rather than iconv to fix documentation encoding
 
 * Thu Feb 10 2022 RPM Fusion Release Engineering <sergiomb@rpmfusion.org> - 3.10a.jumbopatch.20070520-38
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_36_Mass_Rebuild
