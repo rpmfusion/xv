@@ -1,0 +1,35 @@
+commit 1d2a937e2bee6be10e09ed69394ea2ed6faff0b5
+Author: Paul Howarth <paul@city-fan.org>
+Date:   Tue Feb 15 13:37:02 2022 +0000
+
+    Makefile: honour LDFLAGS if it's set in the environment
+
+diff --git a/src/Makefile b/src/Makefile
+index 6a4e1cc..1dee788 100644
+--- a/src/Makefile
++++ b/src/Makefile
+@@ -370,19 +370,19 @@ all: xv bggen vdcomp xcmap xvpictoppm
+ 
+ #xv: $(OBJS) $(JPEGLIB) $(TIFFLIB)
+ xv: $(OBJS)
+-	$(CC) -o xv $(CFLAGS) $(OBJS) $(LIBS)
++	$(CC) -o xv $(CFLAGS) $(LDFLAGS) $(OBJS) $(LIBS)
+ 
+ bggen: bggen.c
+-	$(CC) $(CFLAGS) -o bggen bggen.c $(LIBS)
++	$(CC) $(CFLAGS) $(LDFLAGS) -o bggen bggen.c $(LIBS)
+ 
+ vdcomp: vdcomp.c
+-	$(CC) $(CFLAGS) -o vdcomp vdcomp.c
++	$(CC) $(CFLAGS) $(LDFLAGS) -o vdcomp vdcomp.c
+ 
+ xcmap:  xcmap.c
+-	$(CC) $(CFLAGS) -o xcmap xcmap.c $(LIBS)
++	$(CC) $(CFLAGS) $(LDFLAGS) -o xcmap xcmap.c $(LIBS)
+ 
+ xvpictoppm:  xvpictoppm.c
+-	$(CC) $(CFLAGS) -o xvpictoppm xvpictoppm.c
++	$(CC) $(CFLAGS) $(LDFLAGS) -o xvpictoppm xvpictoppm.c
+ 
+ 
+ 

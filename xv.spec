@@ -38,6 +38,7 @@ Patch12: xv-3.10a-gcc10.patch
 Patch13: xv-3.10a-20220127-jasper.patch
 Patch14: xv-3.10a-c99isms.patch
 Patch15: xv-3.10a-utf8-docs.patch
+Patch16: xv-3.10a-LDFLAGS.patch
 
 BuildRequires: gcc
 BuildRequires: libtiff-devel
@@ -170,11 +171,14 @@ rm ../%{name}-%{vprog}-jumbo-fix-enh-patch-%{vjumbo}.txt
 # Fix some C99-isms introduced in previous patch, breaks build with older compilers
 %patch14 -p2
 
-# Fix compiler options, install directories; enable JPEG 2000 support
-%patch0 -p1
-
 # Recode docs as UTF-8
 %patch15 -p2
+
+# Honour LDFLAGS if present in the environment
+%patch16 -p2
+
+# Fix compiler options, install directories; enable JPEG 2000 support
+%patch0 -p1
 
 # Include permission to distribute
 install -m 0644 -p %{SOURCE2} .
@@ -198,7 +202,7 @@ for doc in docs/manuals/xv*.ps; do
   mv -f ${doc}.unix ${doc}
 done
 
-# Fix directory location of X libs
+# Fix directory location of X libs and link with libXt
 sed -i -e 's@-L/usr/X11R6/lib[[:space:]]@-L%{_libdir} -lXt @' Makefile
 
 %build
@@ -281,6 +285,7 @@ done
 - Fix Jasper support to use proper library APIs (patch from Michael Adams,
   Jasper upstream maintainer)
 - Use a patch rather than iconv to fix documentation encoding
+- Honour LDFLAGS if present in the environment
 
 * Thu Feb 10 2022 RPM Fusion Release Engineering <sergiomb@rpmfusion.org> - 3.10a.jumbopatch.20070520-38
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_36_Mass_Rebuild
