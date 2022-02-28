@@ -1,0 +1,99 @@
+From 9d7ed2a203a3453d9dcd675643cec33384ae0a9f Mon Sep 17 00:00:00 2001
+From: Stuart Henderson <stu@spacehopper.org>
+Date: Fri, 18 Feb 2022 20:39:36 +0000
+Subject: [PATCH] report error messages from libjpeg
+
+---
+ src/xv.h     |  5 +++--
+ src/xvdir.c  | 11 ++++++++---
+ src/xvjpeg.c |  6 ++++--
+ 3 files changed, 15 insertions(+), 7 deletions(-)
+
+diff --git a/src/xv.h b/src/xv.h
+index 5d380dc..c53734c 100644
+--- a/src/xv.h
++++ b/src/xv.h
+@@ -162,7 +162,7 @@
+ #ifndef VMS
+ #  include <errno.h>
+ #  ifndef __NetBSD__
+-#    if !(defined __GLIBC__ && __GLIBC__ >= 2)
++#    if !(defined(__GLIBC__) && __GLIBC__ >= 2) && !defined(__OpenBSD__)
+        extern int   errno;         /* SHOULD be in errno.h, but often isn't */
+        extern char *sys_errlist[]; /* this too... */
+ #    endif
+@@ -1722,7 +1722,8 @@ char *GetDirFullName       PARM((void));
+ void SetDirSaveMode        PARM((int, int));
+ int  Globify               PARM((char *));
+ FILE *OpenOutFile          PARM((const char *));
+-int  CloseOutFile          PARM((FILE *, const char *, int));
++int  CloseOutFileWhy          PARM((FILE *, const char *, int, const char *));
++#define CloseOutFile(fp, name, fail) CloseOutFileWhy((fp), (name), (fail), NULL)
+ 
+ byte *GenSavePic           PARM((int*, int*,int*, int*, int*,
+ 				 byte**, byte**, byte**));
+diff --git a/src/xvdir.c b/src/xvdir.c
+index 56c25a2..28e1fb3 100644
+--- a/src/xvdir.c
++++ b/src/xvdir.c
+@@ -1879,18 +1879,23 @@ FILE *OpenOutFile(filename)
+ 
+ 
+ /***************************************/
+-int CloseOutFile(fp, filename, failed)
++int CloseOutFileWhy(fp, filename, failed, why)
+      FILE *fp;
+      const char *filename;
+      int   failed;
++     const char *why;
+ {
+   char buf[64];
+ 
+   /* close output file, and if piping, deal... Returns '0' if everything OK */
+ 
+   if (failed) {    /* failure during format-specific output routine */
+-    char  str[512];
+-    sprintf(str,"Couldn't write file '%s'.", outFName);
++    char  str[2048];
++    if (why)
++	    snprintf(str, 2048, "Couldn't write file '%s' (%s).", outFName, 
++		why);
++    else
++	    snprintf(str, 2048, "Couldn't write file '%s'.", outFName);
+     ErrPopUp(str, "\nBummer!");
+     unlink(outFName);   /* couldn't properly write file:  delete it */
+     return 1;
+diff --git a/src/xvjpeg.c b/src/xvjpeg.c
+index 44cdf09..2594db4 100644
+--- a/src/xvjpeg.c
++++ b/src/xvjpeg.c
+@@ -87,6 +87,8 @@ static int   colorType;
+ static DIAL  qDial, smDial;
+ static BUTT  jbut[J_NBUTTS];
+ 
++char errbuffer[JMSG_LENGTH_MAX];
++
+ 
+ 
+ 
+@@ -418,7 +420,7 @@ static void writeJPEG()
+ 
+   if (pfree) free(inpix);
+ 
+-  if (CloseOutFile(fp, filename, rv) == 0) DirBox(0);
++  if (CloseOutFileWhy(fp, filename, rv, errbuffer) == 0) DirBox(0);
+   SetCursors(-1);
+ }
+ 
+@@ -444,7 +446,7 @@ METHODDEF void  xv_error_exit(cinfo)
+   my_error_ptr myerr;
+ 
+   myerr = (my_error_ptr) cinfo->err;
+-  (*cinfo->err->output_message)(cinfo);     /* display error message */
++  (*cinfo->err->format_message)(cinfo, errbuffer);     /* fmt error message */
+   longjmp(myerr->setjmp_buffer, 1);         /* return from error */
+ }
+ 
+-- 
+2.35.1
+
