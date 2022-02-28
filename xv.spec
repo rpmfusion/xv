@@ -3,7 +3,7 @@
 
 Name: xv
 Version: %{vprog}.jumbopatch.%{vjumbo}
-Release: 39%{?dist}
+Release: 40%{?dist}
 Summary: Interactive image display program for X
 Summary(de.UTF-8): X-basierender Bild-Viewer für praktische sämtliche Grafiken
 Summary(es.UTF-8): Visualizador de imágenes para X para cuasi todos los formatos de imágenes
@@ -39,7 +39,12 @@ Patch13: xv-3.10a-20220127-jasper.patch
 Patch14: xv-3.10a-c99isms.patch
 Patch15: xv-3.10a-utf8-docs.patch
 Patch16: xv-3.10a-LDFLAGS.patch
-
+Patch17: xv-3.10a-multi-APP1.patch
+Patch18: xv-3.10a-corrupt-GIF.patch
+Patch19: xv-3.10a-libjpeg-messages.patch
+Patch20: xv-3.10a-dirw.patch
+Patch21: xv-3.10a-jpeg8.patch
+Patch22: xv-3.10a-ticks.patch
 BuildRequires: gcc
 BuildRequires: libtiff-devel
 BuildRequires: libpng-devel
@@ -177,6 +182,28 @@ rm ../%{name}-%{vprog}-jumbo-fix-enh-patch-%{vjumbo}.txt
 # Honour LDFLAGS if present in the environment
 %patch16 -p2
 
+# Ignore multiple APP1 data structs; libjpeg can't write them
+%patch17 -p2
+
+# Fix segfault seen with some corrupt GIF file
+%patch18 -p2
+
+# Report errors from libjpeg
+%patch19 -p2
+
+# In file selection box, do not move cursor if no filename is there
+# [Novell BZ #506573]
+%patch20 -p2
+
+# In libjpeg the numbers of out_color_components and color_components are
+# different for quantize_colors, i.e. color_components is the colormap
+# (normally 1) [Novell BZ #412491]
+%patch21 -p2
+
+# More thorough version of CLK_TCK patch (patch4)
+# [Novell BZ #237214]
+%patch22 -p2
+
 # Fix compiler options, install directories; enable JPEG 2000 support
 %patch0 -p1
 
@@ -281,6 +308,14 @@ done
 %doc %{_docdir}/%{name}-%{vprog}/manuals/
 
 %changelog
+* Mon Feb 28 2022 Paul Howarth <paul@city-fan.org> - 3.10a.jumbopatch.20070520-40
+- Ignore multiple APP1 data structs; libjpeg can't write them
+- Fix segfault seen with some corrupt GIF file
+- Report errors from libjpeg
+- In file selection box, do not move cursor if no filename is there
+- Add fix for colormap in 8-bit JPEG mode
+- Add more thorough version of CLK_TCK patch
+
 * Wed Feb 16 2022 Paul Howarth <paul@city-fan.org> - 3.10a.jumbopatch.20070520-39
 - Fix Jasper support to use proper library APIs (patch from Michael Adams,
   Jasper upstream maintainer)
