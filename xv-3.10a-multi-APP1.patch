@@ -1,0 +1,35 @@
+From 21c277662800edd9fd3ab7f6da76fd526bd9b687 Mon Sep 17 00:00:00 2001
+From: Stuart Henderson <stu@spacehopper.org>
+Date: Thu, 17 Feb 2022 10:46:34 +0000
+Subject: [PATCH] ignore multiple APP1 data structs, libjpeg can't write
+ them
+
+Nikon D7100 generates JPEG files with multiple APP1 structs;
+they can be read OK with xv but if the file is edited, an attempt
+to save it will fail. Sample files (marked "camera original")
+showing the problem at https://www.kenrockwell.com/nikon/d7100.htm
+e.g. https://www.kenrockwell.com/nikon/d7100/sample-images/D71_0346.JPG
+---
+ src/xvjpeg.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/src/xvjpeg.c b/src/xvjpeg.c
+index b569811..44cdf09 100644
+--- a/src/xvjpeg.c
++++ b/src/xvjpeg.c
+@@ -851,7 +851,11 @@ METHODDEF boolean  xv_process_app1(cinfo)
+     exifInfo = (byte *) malloc((size_t) length);
+     exifInfoSize = 0;
+   }
+-  else exifInfo = (byte *) realloc(exifInfo, exifInfoSize + length);
++  else {
++    /* one APP1 data struct only, ignore extra stuff */
++    while (length-- > 0)
++      (void)j_getc(cinfo);
++  }
+   if (!exifInfo) FatalError("out of memory in xv_process_app1 (EXIF info)");
+   
+   sp = exifInfo + exifInfoSize;
+-- 
+2.35.1
+
