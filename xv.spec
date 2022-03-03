@@ -3,7 +3,7 @@
 
 Name: xv
 Version: %{vprog}.jumbopatch.%{vjumbo}
-Release: 40%{?dist}
+Release: 41%{?dist}
 Summary: Interactive image display program for X
 Summary(de.UTF-8): X-basierender Bild-Viewer für praktische sämtliche Grafiken
 Summary(es.UTF-8): Visualizador de imágenes para X para cuasi todos los formatos de imágenes
@@ -308,6 +308,9 @@ done
 %doc %{_docdir}/%{name}-%{vprog}/manuals/
 
 %changelog
+* Thu Mar  3 2022 Paul Howarth <paul@city-fan.org> - 3.10a.jumbopatch.20070520-41
+- Fix incorrectly applied corrupt GIF patch
+
 * Mon Feb 28 2022 Paul Howarth <paul@city-fan.org> - 3.10a.jumbopatch.20070520-40
 - Ignore multiple APP1 data structs; libjpeg can't write them
 - Fix segfault seen with some corrupt GIF file

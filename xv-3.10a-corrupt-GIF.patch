@@ -1,4 +1,4 @@
-From 8cac4efc53400cb82afc8c5048940d930243bd3d Mon Sep 17 00:00:00 2001
+From ed040a65458d709011d497c3eb917320786b9ef8 Mon Sep 17 00:00:00 2001
 From: Stuart Henderson <stu@spacehopper.org>
 Date: Fri, 18 Feb 2022 20:43:10 +0000
 Subject: [PATCH] fix segv seen with some corrupt gif file
@@ -11,7 +11,7 @@ unfortunately I don't have more details about the original problem.
  1 file changed, 5 insertions(+), 1 deletion(-)
 
 diff --git a/src/xvgif.c b/src/xvgif.c
-index 7bdb3d1..c2b9746 100644
+index 7bdb3d1..10b348d 100644
 --- a/src/xvgif.c
 +++ b/src/xvgif.c
 @@ -75,6 +75,7 @@ static boolean Interlace, HasGlobalColormap;
@@ -22,22 +22,22 @@ index 7bdb3d1..c2b9746 100644
  
      /* The hash table used by the decompressor */
  static int Prefix[4096];
-@@ -145,7 +146,8 @@ int LoadGIF(fname, pinfo)
+@@ -148,7 +149,8 @@ int LoadGIF(fname, pinfo)
+   if (!(dataptr = RawGIF = (byte *) calloc((size_t) filesize+256, (size_t) 1)))
+     FatalError("LoadGIF: not enough memory to read GIF file");
  
-   /* the +256's are so we can read truncated GIF files without fear of
-      segmentation violation */
--  if (!(dataptr = RawGIF = (byte *) calloc((size_t) filesize+256, (size_t) 1)))
+-  if (!(Raster = (byte *) calloc((size_t) filesize+256,(size_t) 1)))
 +  rasterSize = filesize+256;
 +  if (!(Raster = (byte *) calloc(rasterSize, (size_t) 1)))
      FatalError("LoadGIF: not enough memory to read GIF file");
  
-   if (!(Raster = (byte *) calloc((size_t) filesize+256,(size_t) 1)))
+   if (fread(dataptr, (size_t) filesize, (size_t) 1, fp) != 1)
 @@ -796,6 +798,8 @@ static int readCode()
    int RawCode, ByteOffset;
  
    ByteOffset = BitOffset / 8;
 +  if (ByteOffset >= rasterSize-2)
-+    return 0;
++  	return 0;
    RawCode = Raster[ByteOffset] + (Raster[ByteOffset + 1] << 8);
    if (CodeSize >= 8)
      RawCode += ( ((int) Raster[ByteOffset + 2]) << 16);
