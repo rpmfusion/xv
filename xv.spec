@@ -3,7 +3,7 @@
 
 Name: xv
 Version: %{vprog}.jumbopatch.%{vjumbo}
-Release: 41%{?dist}
+Release: 42%{?dist}
 Summary: Interactive image display program for X
 Summary(de.UTF-8): X-basierender Bild-Viewer für praktische sämtliche Grafiken
 Summary(es.UTF-8): Visualizador de imágenes para X para cuasi todos los formatos de imágenes
@@ -308,6 +308,10 @@ done
 %doc %{_docdir}/%{name}-%{vprog}/manuals/
 
 %changelog
+* Mon Aug 08 2022 RPM Fusion Release Engineering <sergiomb@rpmfusion.org> - 3.10a.jumbopatch.20070520-42
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_37_Mass_Rebuild and ffmpeg
+  5.1
+
 * Thu Mar  3 2022 Paul Howarth <paul@city-fan.org> - 3.10a.jumbopatch.20070520-41
 - Fix incorrectly applied corrupt GIF patch
 
