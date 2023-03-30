@@ -3,7 +3,7 @@
 
 Name: xv
 Version: %{vprog}.jumbopatch.%{vjumbo}
-Release: 42%{?dist}
+Release: 43%{?dist}
 Summary: Interactive image display program for X
 Summary(de.UTF-8): X-basierender Bild-Viewer für praktische sämtliche Grafiken
 Summary(es.UTF-8): Visualizador de imágenes para X para cuasi todos los formatos de imágenes
@@ -135,77 +135,77 @@ patch -p1 < ../%{name}-%{vprog}-jumbo-fix-enh-patch-%{vjumbo}.txt
 rm ../%{name}-%{vprog}-jumbo-fix-enh-patch-%{vjumbo}.txt
 
 # Interim jumbo patch update
-%patch1 -p1
+%patch -P 1 -p1
 
 # Clean up code
-%patch2 -p1
+%patch -P 2 -p1
 
 # Add FLmask feature (rebased patch; original version won't apply after jumbo patch)
-%patch3 -p1
+%patch -P 3 -p1
 
 # replace CLK_TCK with sysconf(_SC_CLK_TCK)
-%patch4 -p1
+%patch -P 4 -p1
 
 # libpng 1.5 compatibility
-%patch5 -p0
+%patch -P 5 -p0
 
 # NAME_MAX buffer overflow fix
-%patch6 -p1
+%patch -P 6 -p1
 
 # cut/paste fix for 24bit+ images
-%patch7 -p1
+%patch -P 7 -p1
 
 # fix build with -Werror=format-security
-%patch8
+%patch -P 8
 
 # fix crash when viewing PNGs with iTXt/utf8 comments
-%patch9 -p1
+%patch -P 9 -p1
 
 # fix crash due to off-by-one smoothing bug
-%patch10 -p1
+%patch -P 10 -p1
 
 # Hopefully fix rfbz#3044
-%patch11 -p0
+%patch -P 11 -p0
 
 # Fix FTBFS with GCC 10
-%patch12 -p0
+%patch -P 12 -p0
 
 # Fix Jasper support to use proper library APIs (patch from Jasper upstream maintainer)
-%patch13 -p0
+%patch -P 13 -p0
 
 # Fix some C99-isms introduced in previous patch, breaks build with older compilers
-%patch14 -p2
+%patch -P 14 -p2
 
 # Recode docs as UTF-8
-%patch15 -p2
+%patch -P 15 -p2
 
 # Honour LDFLAGS if present in the environment
-%patch16 -p2
+%patch -P 16 -p2
 
 # Ignore multiple APP1 data structs; libjpeg can't write them
-%patch17 -p2
+%patch -P 17 -p2
 
 # Fix segfault seen with some corrupt GIF file
-%patch18 -p2
+%patch -P 18 -p2
 
 # Report errors from libjpeg
-%patch19 -p2
+%patch -P 19 -p2
 
 # In file selection box, do not move cursor if no filename is there
 # [Novell BZ #506573]
-%patch20 -p2
+%patch -P 20 -p2
 
 # In libjpeg the numbers of out_color_components and color_components are
 # different for quantize_colors, i.e. color_components is the colormap
 # (normally 1) [Novell BZ #412491]
-%patch21 -p2
+%patch -P 21 -p2
 
 # More thorough version of CLK_TCK patch (patch4)
 # [Novell BZ #237214]
-%patch22 -p2
+%patch -P 22 -p2
 
 # Fix compiler options, install directories; enable JPEG 2000 support
-%patch0 -p1
+%patch -P 0 -p1
 
 # Include permission to distribute
 install -m 0644 -p %{SOURCE2} .
@@ -308,6 +308,9 @@ done
 %doc %{_docdir}/%{name}-%{vprog}/manuals/
 
 %changelog
+* Thu Mar 30 2023 Paul Howarth <paul@city-fan.org> - 3.10a.jumbopatch.20070520-43
+- Avoid deprecated patch syntax
+
 * Mon Aug 08 2022 RPM Fusion Release Engineering <sergiomb@rpmfusion.org> - 3.10a.jumbopatch.20070520-42
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_37_Mass_Rebuild and ffmpeg
   5.1
