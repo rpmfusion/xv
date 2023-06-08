@@ -1,9 +1,6 @@
-%global vprog 3.10a
-%global vjumbo 20070520
-
 Name: xv
-Version: %{vprog}.jumbopatch.%{vjumbo}
-Release: 43%{?dist}
+Version: 4.1.1
+Release: 1%{?dist}
 Summary: Interactive image display program for X
 Summary(de.UTF-8): X-basierender Bild-Viewer für praktische sämtliche Grafiken
 Summary(es.UTF-8): Visualizador de imágenes para X para cuasi todos los formatos de imágenes
@@ -14,46 +11,23 @@ Summary(ru.UTF-8): Программа для просмотра и преобр�
 Summary(tr.UTF-8): X tabanlı resim görüntüleyici
 Summary(uk.UTF-8): Програма для перегляду та перетворення файлів зображень для X
 License: Shareware
-URL: http://www.trilon.com/xv/xv.html
-Source0: ftp://ftp.trilon.com/pub/xv/%{name}-%{vprog}.tar.gz
-Source1: http://downloads.sourceforge.net/png-mng/%{name}-%{vprog}-jumbo-patches-%{vjumbo}.tar.gz
+URL: https://github.com/jasper-software/xv
+Source0: https://github.com/jasper-software/xv/archive/refs/tags/v%{version}.tar.gz
 Source2: DISTRIBUTE.txt
-Source3: %{name}.desktop
-Source4: %{name}.png
-Source5: ftp://ftp.trilon.com/pub/xv/xvman310a-html.tar.gz
-Source6: xv-non-english-Xman-pages.tar.bz2
-Patch0: xv-jumbo-20070520-makefile.patch
-Patch1: http://www.gregroelofs.com/code/xv-3.10a-enhancements.20070520-20081216.diff
-Patch2: xv-3.10a-cleanup.patch
-Patch3: xv-FLmask.v2.1.patch
-Patch4: xv-wait.patch
-Patch5: xv-3.10a-libpng15.patch
-Patch6: xv-3.10a-namemax.patch
-Patch7: xv-3.10a-xvcut.patch
-Patch8: xv-3.10a-format.patch
-Patch9: xv-3.10a-png-itxt.patch
-Patch10: xv-3.10a-smooth-fix2.patch
-Patch11: xv-3.10a-signal.patch
-Patch12: xv-3.10a-gcc10.patch
-Patch13: xv-3.10a-20220127-jasper.patch
-Patch14: xv-3.10a-c99isms.patch
-Patch15: xv-3.10a-utf8-docs.patch
-Patch16: xv-3.10a-LDFLAGS.patch
-Patch17: xv-3.10a-multi-APP1.patch
-Patch18: xv-3.10a-corrupt-GIF.patch
-Patch19: xv-3.10a-libjpeg-messages.patch
-Patch20: xv-3.10a-dirw.patch
-Patch21: xv-3.10a-jpeg8.patch
-Patch22: xv-3.10a-ticks.patch
-BuildRequires: gcc
-BuildRequires: libtiff-devel
-BuildRequires: libpng-devel
-BuildRequires: jasper-devel
+Source3: xv.desktop
+Source4: xv.png
+BuildRequires: cmake >= 3.12
+BuildRequires: coreutils
 BuildRequires: desktop-file-utils
+BuildRequires: gcc
+BuildRequires: jasper-devel
+BuildRequires: libjpeg-devel
+BuildRequires: libpng-devel
+BuildRequires: libtiff-devel
+BuildRequires: libwebp-devel
 BuildRequires: libX11-devel
 BuildRequires: libXt-devel
-
-
+# Require hicolor-icon-theme for ownership of %%{_datadir}/icons/hicolor/48x48/apps/
 Requires: hicolor-icon-theme
 
 %description
@@ -128,169 +102,45 @@ Manuals in various formats for the xv image viewer, plus technical details
 of the various image file formats supported.
 
 %prep
-%setup -q -n %{name}-%{vprog} -b 1 -a 5 -a 6
-
-# Apply 20070520 jumbo enhancement patch, bundled with %%{SOURCE1}
-patch -p1 < ../%{name}-%{vprog}-jumbo-fix-enh-patch-%{vjumbo}.txt
-rm ../%{name}-%{vprog}-jumbo-fix-enh-patch-%{vjumbo}.txt
-
-# Interim jumbo patch update
-%patch -P 1 -p1
-
-# Clean up code
-%patch -P 2 -p1
-
-# Add FLmask feature (rebased patch; original version won't apply after jumbo patch)
-%patch -P 3 -p1
-
-# replace CLK_TCK with sysconf(_SC_CLK_TCK)
-%patch -P 4 -p1
-
-# libpng 1.5 compatibility
-%patch -P 5 -p0
-
-# NAME_MAX buffer overflow fix
-%patch -P 6 -p1
-
-# cut/paste fix for 24bit+ images
-%patch -P 7 -p1
-
-# fix build with -Werror=format-security
-%patch -P 8
-
-# fix crash when viewing PNGs with iTXt/utf8 comments
-%patch -P 9 -p1
-
-# fix crash due to off-by-one smoothing bug
-%patch -P 10 -p1
-
-# Hopefully fix rfbz#3044
-%patch -P 11 -p0
-
-# Fix FTBFS with GCC 10
-%patch -P 12 -p0
-
-# Fix Jasper support to use proper library APIs (patch from Jasper upstream maintainer)
-%patch -P 13 -p0
-
-# Fix some C99-isms introduced in previous patch, breaks build with older compilers
-%patch -P 14 -p2
-
-# Recode docs as UTF-8
-%patch -P 15 -p2
-
-# Honour LDFLAGS if present in the environment
-%patch -P 16 -p2
-
-# Ignore multiple APP1 data structs; libjpeg can't write them
-%patch -P 17 -p2
-
-# Fix segfault seen with some corrupt GIF file
-%patch -P 18 -p2
-
-# Report errors from libjpeg
-%patch -P 19 -p2
-
-# In file selection box, do not move cursor if no filename is there
-# [Novell BZ #506573]
-%patch -P 20 -p2
-
-# In libjpeg the numbers of out_color_components and color_components are
-# different for quantize_colors, i.e. color_components is the colormap
-# (normally 1) [Novell BZ #412491]
-%patch -P 21 -p2
-
-# More thorough version of CLK_TCK patch (patch4)
-# [Novell BZ #237214]
-%patch -P 22 -p2
-
-# Fix compiler options, install directories; enable JPEG 2000 support
-%patch -P 0 -p1
+%setup -q -n xv-%{version}
 
 # Include permission to distribute
 install -m 0644 -p %{SOURCE2} .
 
-# Reorganize docs
-#
-# Note: Man pages for p?m file formats would conflict with netpbm-progs if installed under %%{_mandir}
-mv 00_README README.FLmask
-mv docs/README README.docs
-mkdir docs/{formats,manuals}/
-mv docs/{bmp.doc,epsf.ps,gif*,p[bgp]m.5,xpm.ps} docs/formats/
-mv docs/{xvdocs.{ps,pdf},xvtitle.ps} docs/manuals/
-
-# HTML manual
-mv -f xvman310a docs/manuals/html
-
-# Fix line endings
-for doc in docs/manuals/xv*.ps; do
-  sed -e 's/\r$//' ${doc} > ${doc}.unix
-  touch -r ${doc} ${doc}.unix
-  mv -f ${doc}.unix ${doc}
-done
-
-# Fix directory location of X libs and link with libXt
-sed -i -e 's@-L/usr/X11R6/lib[[:space:]]@-L%{_libdir} -lXt @' Makefile
-
 %build
-%{make_build}
+%cmake -DCMAKE_INSTALL_SYSCONFDIR:PATH=%{_sysconfdir}
+%cmake_build
 
 %install
-%{make_install}
+%cmake_install
 
 desktop-file-install \
-  --dir=%{buildroot}%{_datadir}/applications \
+  --dir %{buildroot}%{_datadir}/applications \
   %{SOURCE3}
 
 install -D -p -m 0644 %{SOURCE4} \
-  %{buildroot}%{_datadir}/icons/hicolor/48x48/apps/%{name}.png
+  %{buildroot}%{_datadir}/icons/hicolor/48x48/apps/xv.png
 
-# Non-English man pages
-install -D -p -m 0644 fi/man1/xv.1 \
-  %{buildroot}%{_mandir}/fi/man1/xv.1
-install -D -p -m 0644 pl/man1/xvpictoppm.1 \
-  %{buildroot}%{_mandir}/pl/man1/xvpictoppm.1
-
-# Populate the docs directory
-mkdir -p %{buildroot}%{_docdir}/%{name}-%{vprog}/
-for doc in \
-  BUGS \
-  CHANGELOG \
-  copyright.h \
-  CPMASK \
-  DISTRIBUTE.txt \
-  IDEAS \
-  README \
-  README.docs \
-  README.FLmask \
-  README.jumbo \
-  README.pcd \
-  xv_mgcsfx.sample \
-  docs/bigxv.jpg \
-  docs/formats/ \
-  docs/manuals/
-do
-  cp -a ${doc} %{buildroot}%{_docdir}/%{name}-%{vprog}/
-done
-
+# Add DISTRIBUTE.txt to the docs directory
+cp -a DISTRIBUTE.txt %{buildroot}%{_docdir}/xv/
 
 %files
-%doc %{_docdir}/%{name}-%{vprog}/BUGS
-%doc %{_docdir}/%{name}-%{vprog}/CHANGELOG
-%doc %{_docdir}/%{name}-%{vprog}/copyright.h
-%doc %{_docdir}/%{name}-%{vprog}/CPMASK
-%doc %{_docdir}/%{name}-%{vprog}/DISTRIBUTE.txt
-%doc %{_docdir}/%{name}-%{vprog}/IDEAS
-%doc %{_docdir}/%{name}-%{vprog}/README
-%doc %{_docdir}/%{name}-%{vprog}/README.FLmask
-%doc %{_docdir}/%{name}-%{vprog}/README.jumbo
-%doc %{_docdir}/%{name}-%{vprog}/README.pcd
-%doc %{_docdir}/%{name}-%{vprog}/xv_mgcsfx.sample
+%doc %{_docdir}/xv/BUGS
+%doc %{_docdir}/xv/CHANGELOG
+%doc %{_docdir}/xv/copyright.h
+%doc %{_docdir}/xv/CPMASK
+%doc %{_docdir}/xv/DISTRIBUTE.txt
+%doc %{_docdir}/xv/IDEAS
+%doc %{_docdir}/xv/README
+%doc %{_docdir}/xv/README.FLmask
+%doc %{_docdir}/xv/README.jumbo
+%doc %{_docdir}/xv/README.pcd
 %{_bindir}/bggen
 %{_bindir}/vdcomp
 %{_bindir}/xcmap
 %{_bindir}/xv
 %{_bindir}/xvpictoppm
+%config(noreplace) %{_sysconfdir}/xv_mgcsfx
 %{_datadir}/applications/xv.desktop
 %{_datadir}/icons/hicolor/48x48/apps/xv.png
 %{_mandir}/man1/bggen.1*
@@ -302,12 +152,16 @@ done
 %lang(pl) %{_mandir}/pl/man1/xvpictoppm.1*
 
 %files doc
-%doc %{_docdir}/%{name}-%{vprog}/README.docs
-%doc %{_docdir}/%{name}-%{vprog}/bigxv.jpg
-%doc %{_docdir}/%{name}-%{vprog}/formats/
-%doc %{_docdir}/%{name}-%{vprog}/manuals/
+%doc %{_docdir}/xv/README.docs
+%doc %{_docdir}/xv/bigxv.jpg
+%doc %{_docdir}/xv/formats/
+%doc %{_docdir}/xv/manuals/
 
 %changelog
+* Thu Jun  8 2023 Paul Howarth <paul@city-fan.org> - 4.1.1-1
+- Switch upstream to https://github.com/jasper-software/xv (#6702)
+- Add webp support
+
 * Thu Mar 30 2023 Paul Howarth <paul@city-fan.org> - 3.10a.jumbopatch.20070520-43
 - Avoid deprecated patch syntax
 
