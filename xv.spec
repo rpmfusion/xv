@@ -1,5 +1,5 @@
 Name: xv
-Version: 4.1.1
+Version: 4.2.0
 Release: 1%{?dist}
 Summary: Interactive image display program for X
 Summary(de.UTF-8): X-basierender Bild-Viewer für praktische sämtliche Grafiken
@@ -158,6 +158,10 @@ cp -a DISTRIBUTE.txt %{buildroot}%{_docdir}/xv/
 %doc %{_docdir}/xv/manuals/
 
 %changelog
+* Tue Jul 18 2023 Paul Howarth <paul@city-fan.org> - 4.2.0-1
+- Update to 4.2.0
+  - Fixed the splash screen to display the correct version number (GH#9, GH#10)
+
 * Thu Jun  8 2023 Paul Howarth <paul@city-fan.org> - 4.1.1-1
 - Switch upstream to https://github.com/jasper-software/xv (#6702)
 - Add webp support
