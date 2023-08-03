@@ -1,6 +1,6 @@
 Name: xv
 Version: 4.2.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: Interactive image display program for X
 Summary(de.UTF-8): X-basierender Bild-Viewer für praktische sämtliche Grafiken
 Summary(es.UTF-8): Visualizador de imágenes para X para cuasi todos los formatos de imágenes
@@ -158,6 +158,9 @@ cp -a DISTRIBUTE.txt %{buildroot}%{_docdir}/xv/
 %doc %{_docdir}/xv/manuals/
 
 %changelog
+* Thu Aug 03 2023 RPM Fusion Release Engineering <sergiomb@rpmfusion.org> - 4.2.0-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_39_Mass_Rebuild
+
 * Tue Jul 18 2023 Paul Howarth <paul@city-fan.org> - 4.2.0-1
 - Update to 4.2.0
   - Fixed the splash screen to display the correct version number (GH#9, GH#10)
