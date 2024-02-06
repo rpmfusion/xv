@@ -1,0 +1,6 @@
+# Image formats
+addFilter(" E: spelling-error \('(flmask|gif|jpg|xwd)', ")
+
+# It is what it is
+addFilter("W: invalid-license Shareware")
+

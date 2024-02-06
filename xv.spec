@@ -1,6 +1,6 @@
 Name: xv
-Version: 4.2.0
-Release: 4%{?dist}
+Version: 5.0.0
+Release: 1%{?dist}
 Summary: Interactive image display program for X
 Summary(de.UTF-8): X-basierender Bild-Viewer für praktische sämtliche Grafiken
 Summary(es.UTF-8): Visualizador de imágenes para X para cuasi todos los formatos de imágenes
@@ -20,6 +20,7 @@ BuildRequires: cmake >= 3.12
 BuildRequires: coreutils
 BuildRequires: desktop-file-utils
 BuildRequires: gcc
+BuildRequires: hardlink
 BuildRequires: jasper-devel
 BuildRequires: libjpeg-devel
 BuildRequires: libpng-devel
@@ -124,6 +125,9 @@ install -D -p -m 0644 %{SOURCE4} \
 # Add DISTRIBUTE.txt to the docs directory
 cp -a DISTRIBUTE.txt %{buildroot}%{_docdir}/xv/
 
+# Hard link identical documentation files together
+hardlink -cv %{buildroot}%{_docdir}/xv/manuals/html/images/
+
 %files
 %doc %{_docdir}/xv/BUGS
 %doc %{_docdir}/xv/CHANGELOG
@@ -158,6 +162,14 @@ cp -a DISTRIBUTE.txt %{buildroot}%{_docdir}/xv/
 %doc %{_docdir}/xv/manuals/
 
 %changelog
+* Tue Feb  6 2024 Paul Howarth <paul@city-fan.org> - 5.0.0-1
+- Update to 5.0.0
+  - Removed all of the obsolete (and no longer used) make/imake-based build
+    infrastructure
+  - Removed the bundled copies of the source code for the external libraries
+    used for JPEG and TIFF support (which were not used anyway)
+- Avoid duplicate documentation files by hard linking them together
+
 * Sun Feb 04 2024 RPM Fusion Release Engineering <sergiomb@rpmfusion.org> - 4.2.0-4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_40_Mass_Rebuild
 
