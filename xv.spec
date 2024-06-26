@@ -1,5 +1,5 @@
 Name: xv
-Version: 5.0.0
+Version: 5.2.0
 Release: 1%{?dist}
 Summary: Interactive image display program for X
 Summary(de.UTF-8): X-basierender Bild-Viewer für praktische sämtliche Grafiken
@@ -162,6 +162,10 @@ hardlink -cv %{buildroot}%{_docdir}/xv/manuals/html/images/
 %doc %{_docdir}/xv/manuals/
 
 %changelog
+* Wed Jun 26 2024 Paul Howarth <paul@city-fan.org> - 5.2.0-1
+- Update to 5.2.0
+  - Made some improvements to WEBP support
+
 * Tue Feb  6 2024 Paul Howarth <paul@city-fan.org> - 5.0.0-1
 - Update to 5.0.0
   - Removed all of the obsolete (and no longer used) make/imake-based build
