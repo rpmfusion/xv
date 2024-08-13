@@ -1,6 +1,6 @@
 Name: xv
-Version: 5.2.0
-Release: 2%{?dist}
+Version: 6.0.0
+Release: 1%{?dist}
 Summary: Interactive image display program for X
 Summary(de.UTF-8): X-basierender Bild-Viewer für praktische sämtliche Grafiken
 Summary(es.UTF-8): Visualizador de imágenes para X para cuasi todos los formatos de imágenes
@@ -122,8 +122,8 @@ desktop-file-install \
 install -D -p -m 0644 %{SOURCE4} \
   %{buildroot}%{_datadir}/icons/hicolor/48x48/apps/xv.png
 
-# Add DISTRIBUTE.txt to the docs directory
-cp -a DISTRIBUTE.txt %{buildroot}%{_docdir}/xv/
+# Add DISTRIBUTE.txt and NEWS.txt to the docs directory
+cp -a DISTRIBUTE.txt NEWS.txt %{buildroot}%{_docdir}/xv/
 
 # Hard link identical documentation files together
 hardlink -cv %{buildroot}%{_docdir}/xv/manuals/html/images/
@@ -135,6 +135,7 @@ hardlink -cv %{buildroot}%{_docdir}/xv/manuals/html/images/
 %doc %{_docdir}/xv/CPMASK
 %doc %{_docdir}/xv/DISTRIBUTE.txt
 %doc %{_docdir}/xv/IDEAS
+%doc %{_docdir}/xv/NEWS.txt
 %doc %{_docdir}/xv/README
 %doc %{_docdir}/xv/README.FLmask
 %doc %{_docdir}/xv/README.jumbo
@@ -147,6 +148,7 @@ hardlink -cv %{buildroot}%{_docdir}/xv/manuals/html/images/
 %config(noreplace) %{_sysconfdir}/xv_mgcsfx
 %{_datadir}/applications/xv.desktop
 %{_datadir}/icons/hicolor/48x48/apps/xv.png
+%{_datadir}/pixmaps/xv.xpm
 %{_mandir}/man1/bggen.1*
 %{_mandir}/man1/vdcomp.1*
 %{_mandir}/man1/xcmap.1*
@@ -162,6 +164,15 @@ hardlink -cv %{buildroot}%{_docdir}/xv/manuals/html/images/
 %doc %{_docdir}/xv/manuals/
 
 %changelog
+* Tue Aug 13 2024 Paul Howarth <paul@city-fan.org> - 6.0.0-1
+- Update to 6.0.0
+  - Add basic HiDPI support
+  - Improve the compatibility of the source code with more modern C standards
+    (e.g., C23)
+  - Fix the build with link-time optimization (GH#25)
+  - Fix many other bugs
+- Package NEWS.txt
+
 * Sat Aug 03 2024 RPM Fusion Release Engineering <sergiomb@rpmfusion.org> - 5.2.0-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_41_Mass_Rebuild
 
