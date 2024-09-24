@@ -1,5 +1,5 @@
 Name: xv
-Version: 6.0.0
+Version: 6.0.1
 Release: 1%{?dist}
 Summary: Interactive image display program for X
 Summary(de.UTF-8): X-basierender Bild-Viewer für praktische sämtliche Grafiken
@@ -164,6 +164,12 @@ hardlink -cv %{buildroot}%{_docdir}/xv/manuals/html/images/
 %doc %{_docdir}/xv/manuals/
 
 %changelog
+* Tue Sep 24 2024 Paul Howarth <paul@city-fan.org> - 6.0.1-1
+- Update to 6.0.1
+  - xvjpeg.c, xvpng.c: Fix gcc warnings on -Wclobbered
+  - xvjpeg.c: Fix a bad memory access on jpegs with inverted data
+  - Fix xvtext.c overwrite exposed by the link-time optimization fix
+
 * Tue Aug 13 2024 Paul Howarth <paul@city-fan.org> - 6.0.0-1
 - Update to 6.0.0
   - Add basic HiDPI support
