@@ -1,5 +1,5 @@
 Name: xv
-Version: 6.0.1
+Version: 6.0.2
 Release: 1%{?dist}
 Summary: Interactive image display program for X
 Summary(de.UTF-8): X-basierender Bild-Viewer für praktische sämtliche Grafiken
@@ -164,6 +164,16 @@ hardlink -cv %{buildroot}%{_docdir}/xv/manuals/html/images/
 %doc %{_docdir}/xv/manuals/
 
 %changelog
+* Tue Oct 15 2024 Paul Howarth <paul@city-fan.org> - 6.0.2-1
+- Update to 6.0.2
+  - Added -isize option to control the icon size in the browser: the syntax is
+    -isize <width> or -isize <width>x<height>
+    If the height is omitted, it defaults to the width * 3/4
+  - xv now checks the XV_OPTIONS environment variable before reading the
+    command line; xv splits it into words and parses it like command line
+    options
+    Use XV_OPTIONS to set default options
+
 * Tue Sep 24 2024 Paul Howarth <paul@city-fan.org> - 6.0.1-1
 - Update to 6.0.1
   - xvjpeg.c, xvpng.c: Fix gcc warnings on -Wclobbered
