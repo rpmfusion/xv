@@ -1,6 +1,6 @@
 Name: xv
 Version: 6.0.2
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: Interactive image display program for X
 Summary(de.UTF-8): X-basierender Bild-Viewer für praktische sämtliche Grafiken
 Summary(es.UTF-8): Visualizador de imágenes para X para cuasi todos los formatos de imágenes
@@ -164,6 +164,9 @@ hardlink -cv %{buildroot}%{_docdir}/xv/manuals/html/images/
 %doc %{_docdir}/xv/manuals/
 
 %changelog
+* Wed Jan 29 2025 RPM Fusion Release Engineering <sergiomb@rpmfusion.org> - 6.0.2-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_42_Mass_Rebuild
+
 * Tue Oct 15 2024 Paul Howarth <paul@city-fan.org> - 6.0.2-1
 - Update to 6.0.2
   - Added -isize option to control the icon size in the browser: the syntax is
