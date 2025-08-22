@@ -1,6 +1,6 @@
 Name: xv
-Version: 6.0.2
-Release: 3%{?dist}
+Version: 6.0.4
+Release: 1%{?dist}
 Summary: Interactive image display program for X
 Summary(de.UTF-8): X-basierender Bild-Viewer für praktische sämtliche Grafiken
 Summary(es.UTF-8): Visualizador de imágenes para X para cuasi todos los formatos de imágenes
@@ -164,6 +164,11 @@ hardlink -cv %{buildroot}%{_docdir}/xv/manuals/html/images/
 %doc %{_docdir}/xv/manuals/
 
 %changelog
+* Fri Aug 22 2025 Paul Howarth <paul@city-fan.org> - 6.0.4-1
+- Update to 6.0.4
+  - Updated URLs for the xv website
+  - Fix crash when freeing JPEG comments (GH#37)
+
 * Mon Jul 28 2025 RPM Fusion Release Engineering <sergiomb@rpmfusion.org> - 6.0.2-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_43_Mass_Rebuild
 
