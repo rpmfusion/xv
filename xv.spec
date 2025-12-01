@@ -1,5 +1,5 @@
 Name: xv
-Version: 6.0.4
+Version: 6.1.0
 Release: 1%{?dist}
 Summary: Interactive image display program for X
 Summary(de.UTF-8): X-basierender Bild-Viewer für praktische sämtliche Grafiken
@@ -22,11 +22,13 @@ BuildRequires: desktop-file-utils
 BuildRequires: gcc
 BuildRequires: hardlink
 BuildRequires: jasper-devel
+BuildRequires: libexif-devel
 BuildRequires: libjpeg-devel
 BuildRequires: libpng-devel
 BuildRequires: libtiff-devel
 BuildRequires: libwebp-devel
 BuildRequires: libX11-devel
+BuildRequires: libXrandr-devel
 BuildRequires: libXt-devel
 # Require hicolor-icon-theme for ownership of %%{_datadir}/icons/hicolor/48x48/apps/
 Requires: hicolor-icon-theme
@@ -164,6 +166,13 @@ hardlink -cv %{buildroot}%{_docdir}/xv/manuals/html/images/
 %doc %{_docdir}/xv/manuals/
 
 %changelog
+* Mon Dec  1 2025 Paul Howarth <paul@city-fan.org> - 6.1.0-1
+- Update to 6.1.0
+  - Add support for EXIF orientation tags (GH#40)
+  - Add support for depth 30, or 10bit/color, for compatibility with mode (GH#39)
+  - Fix wasJpegUp → wasJp2kUp (GH#38)
+- Build with EXIF (orientation) and XRANDR support
+
 * Fri Aug 22 2025 Paul Howarth <paul@city-fan.org> - 6.0.4-1
 - Update to 6.0.4
   - Updated URLs for the xv website
