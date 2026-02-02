@@ -1,6 +1,6 @@
 Name: xv
 Version: 6.1.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: Interactive image display program for X
 Summary(de.UTF-8): X-basierender Bild-Viewer für praktische sämtliche Grafiken
 Summary(es.UTF-8): Visualizador de imágenes para X para cuasi todos los formatos de imágenes
@@ -166,6 +166,9 @@ hardlink -cv %{buildroot}%{_docdir}/xv/manuals/html/images/
 %doc %{_docdir}/xv/manuals/
 
 %changelog
+* Mon Feb 02 2026 RPM Fusion Release Engineering <sergiomb@rpmfusion.org> - 6.1.0-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_44_Mass_Rebuild
+
 * Mon Dec  1 2025 Paul Howarth <paul@city-fan.org> - 6.1.0-1
 - Update to 6.1.0
   - Add support for EXIF orientation tags (GH#40)
